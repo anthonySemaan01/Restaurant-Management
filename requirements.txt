@@ -2,3 +2,4 @@ fastapi~=0.94.0
 uvicorn~=0.21.0
 starlette~=0.26.0.post1
 sqlalchemy
+dependency-injector==4.31.2

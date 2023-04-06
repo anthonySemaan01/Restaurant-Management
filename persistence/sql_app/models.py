@@ -22,6 +22,7 @@ class Manager(Base):
     restaurant = relationship('Restaurant', back_populates='managers')
     reservations = relationship("Reservation", secondary="manager_reservation", back_populates="managers")
     orders = relationship("Order", secondary="manager_order", back_populates="managers")
+    staffs = relationship("Staff", back_populates="manager")
 
 
 class Customer(Base):
@@ -79,6 +80,7 @@ class Staff(Base):
     restaurant = relationship('Restaurant', back_populates='staffs')
     reservations = relationship("Reservation", secondary="staff_reservation", back_populates="staffs")
     orders = relationship("Order", secondary="staff_order", back_populates="staffs")
+    manager = relationship("Manager", back_populates="staffs")
 
 
 class Order(Base):

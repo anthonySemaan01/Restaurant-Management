@@ -1,4 +1,4 @@
-from ocr_api.persistence.sqlite_db.database import SessionLocal
+from persistence.sql_app.database import SessionLocal
 
 
 def get_db():
