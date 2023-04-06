@@ -20,6 +20,8 @@ class Manager(Base):
     picture = Column(JSON)
 
     restaurant = relationship('Restaurant', back_populates='managers')
+    reservations = relationship("Reservation", secondary="manager_reservation", back_populates="managers")
+    orders = relationship("Order", secondary="manager_order", back_populates="managers")
 
 
 class Customer(Base):
@@ -34,12 +36,14 @@ class Customer(Base):
     picture = Column(String(255))
     date_of_birth = Column(DateTime, nullable=False)
 
+    reservations = relationship('Reservation', back_populates='customer')
+    reviews = relationship('Review', back_populates='customer')
+
 
 class Restaurant(Base):
     __tablename__ = 'Restaurant'
 
     restaurant_id = Column(Integer, primary_key=True, autoincrement=True)
-    manager_id = Column(Integer, ForeignKey('Manager.manager_id'), nullable=False)
     name = Column(String(255), nullable=False)
     address = Column(String(255), nullable=False)
     phone_number = Column(String(255), nullable=False)
@@ -52,6 +56,10 @@ class Restaurant(Base):
     images = Column(JSON)
 
     managers = relationship('Manager', back_populates='restaurant')
+    staffs = relationship('Staff', back_populates='restaurant')
+    tables = relationship('Table', back_populates='restaurant')
+    reviews = relationship('Review', back_populates='restaurant')
+    dishes = relationship('Dish', back_populates='restaurant')
 
 
 class Staff(Base):
@@ -68,8 +76,9 @@ class Staff(Base):
     date_of_birth = Column(DateTime, nullable=False)
     picture = Column(JSON)
 
-    manager = relationship('Manager', back_populates='staffs')
     restaurant = relationship('Restaurant', back_populates='staffs')
+    reservations = relationship("Reservation", secondary="staff_reservation", back_populates="staffs")
+    orders = relationship("Order", secondary="staff_order", back_populates="staffs")
 
 
 class Order(Base):
@@ -87,18 +96,9 @@ class Order(Base):
     fin_type = Column(String(255))
 
     table = relationship('Table', back_populates='orders')
-    staff_init = relationship('Staff', foreign_keys=[id_init], back_populates='orders_init')
-    staff_fin = relationship('Staff', foreign_keys=[id_fin], back_populates='orders_fin')
-
-
-class OrderDish(Base):
-    __tablename__ = 'OrderDish'
-
-    order_id = Column(Integer, ForeignKey('Order.order_id'), primary_key=True)
-    dish_id = Column(Integer, ForeignKey('Dish.dish_id'), primary_key=True)
-
-    order = relationship('Order', back_populates='dishes')
-    dish = relationship('Dish', back_populates='orders')
+    staffs = relationship("Staff", secondary="staff_order", back_populates="orders")
+    dishes = relationship("Dish", secondary="order_dish", back_populates="orders")
+    managers = relationship("Manager", secondary="manager_order", back_populates="orders")
 
 
 class Dish(Base):
@@ -111,7 +111,7 @@ class Dish(Base):
     price = Column(Numeric(10, 2), nullable=False)
 
     restaurant = relationship('Restaurant', back_populates='dishes')
-    orders = relationship('OrderDish', back_populates='dish')
+    orders = relationship("Order", secondary="order_dish", back_populates="dishes")
 
 
 class ReservationStatus(PyEnum):
@@ -131,9 +131,10 @@ class Reservation(Base):
     status = Column(Enum(ReservationStatus), nullable=False)
     proc_type = Column(String(255))
 
-    table = relationship("Table", back_populates="reservations")
     customer = relationship("Customer", back_populates="reservations")
-    processor = relationship("Staff", back_populates="processed_reservations")
+    staffs = relationship("Staff", secondary="staff_reservation", back_populates="reservations")
+    managers = relationship("Manager", secondary="manager_reservation", back_populates="reservations")
+    tables = relationship("Table", secondary="table_reservation", back_populates="reservations")
 
 
 class Table(Base):
@@ -143,26 +144,10 @@ class Table(Base):
     capacity = Column(Integer, nullable=False)
     location = Column(String(255), nullable=False)
 
-    restaurant = relationship("Restaurant", back_populates="tables")
+    restaurant = relationship('Restaurant', back_populates='tables')
+    orders = relationship('Order', back_populates='table')
 
-
-class Restaurant(Base):
-    __tablename__ = 'Restaurant'
-    restaurant_id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-    manager_id = Column(Integer, ForeignKey('Manager.manager_id'), nullable=False)
-    name = Column(String(255), nullable=False)
-    address = Column(String(255), nullable=False)
-    phone_number = Column(String(255), nullable=False)
-    cuisine = Column(
-        Enum('American', 'Chinese', 'French', 'Indian', 'Italian', 'Japanese', 'Mexican', 'Middle Eastern'),
-        nullable=False)
-    website = Column(String(255))
-    social_media_pages = Column(String(255))
-    hours_of_operation = Column(String(255))
-    images = Column(JSON)
-
-    manager = relationship("Manager", back_populates="restaurants")
-    tables = relationship("Table", back_populates="restaurant")
+    reservations = relationship("Reservation", secondary="table_reservation", back_populates="tables")
 
 
 class Review(Base):
@@ -174,3 +159,40 @@ class Review(Base):
     comment = Column(Text)
     restaurant = relationship('Restaurant', back_populates='reviews')
     customer = relationship('Customer', back_populates='reviews')
+
+
+###########################################################################
+class StaffReservation(Base):
+    __tablename__ = 'staff_reservation'
+    staff_id = Column(Integer, ForeignKey('Staff.staff_id'), primary_key=True)
+    reservation_id = Column(Integer, ForeignKey('Reservation.reservation_id'), primary_key=True)
+
+
+class ManagerReservation(Base):
+    __tablename__ = 'manager_reservation'
+    manager_id = Column(Integer, ForeignKey('Manager.manager_id'), primary_key=True)
+    reservation_id = Column(Integer, ForeignKey('Reservation.reservation_id'), primary_key=True)
+
+
+class ReservationTable(Base):
+    __tablename__ = 'table_reservation'
+    table_id = Column(Integer, ForeignKey('Table.table_id'), primary_key=True)
+    reservation_id = Column(Integer, ForeignKey('Reservation.reservation_id'), primary_key=True)
+
+
+class StaffOrder(Base):
+    __tablename__ = 'staff_order'
+    staff_id = Column(Integer, ForeignKey('Staff.staff_id'), primary_key=True)
+    order_id = Column(Integer, ForeignKey('Order.order_id'), primary_key=True)
+
+
+class ManagerOrder(Base):
+    __tablename__ = 'manager_order'
+    manager_id = Column(Integer, ForeignKey('Manager.manager_id'), primary_key=True)
+    order_id = Column(Integer, ForeignKey('Order.order_id'), primary_key=True)
+
+
+class OrderDish(Base):
+    __tablename__ = 'order_dish'
+    dish_id = Column(Integer, ForeignKey('Dish.dish_id'), primary_key=True)
+    order_id = Column(Integer, ForeignKey('Order.order_id'), primary_key=True)
