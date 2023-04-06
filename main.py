@@ -3,9 +3,13 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from api.controllers import health_check_controller
+from persistence.sql_app.database import engine, SessionLocal
+from persistence.sql_app import models
 
 app = FastAPI(version='1.0', title='Restaurant Management Backend',
               description="Providing different services")
+
+models.Base.metadata.create_all(bind=engine)
 
 app.add_middleware(CORSMiddleware,
                    allow_origins=["*"],
