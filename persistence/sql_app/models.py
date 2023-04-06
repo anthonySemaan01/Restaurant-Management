@@ -1,6 +1,6 @@
 from enum import Enum as PyEnum
 
-from sqlalchemy import Column, ForeignKey, Integer, String, Enum, JSON, DateTime, Text, Numeric
+from sqlalchemy import Column, ForeignKey, Integer, String, Enum, JSON, DateTime, Text, Numeric, LargeBinary
 from sqlalchemy.orm import relationship
 
 from persistence.sql_app.database import Base
@@ -34,7 +34,7 @@ class Customer(Base):
     phone_nb = Column(String(20), nullable=False)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
-    picture = Column(String(255))
+    picture = Column(LargeBinary)
     date_of_birth = Column(DateTime, nullable=False)
 
     reservations = relationship('Reservation', back_populates='customer')
