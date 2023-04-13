@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-from sqlalchemy.orm import Session
-from domain.models.user_sign_up_request import UserSignUpRequest
 from fastapi import File
 
 

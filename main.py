@@ -4,9 +4,15 @@ from starlette.middleware.cors import CORSMiddleware
 from api.controllers import health_check_controller, user_controller, table_detection_controller
 from persistence.sql_app.database import engine, SessionLocal
 from persistence.sql_app import models
+from containers import Services
 
 app = FastAPI(version='1.0', title='Restaurant Management Backend',
               description="Providing different services")
+
+services = Services()
+
+services.wire(
+    modules=[health_check_controller, user_controller, table_detection_controller])
 
 models.Base.metadata.create_all(bind=engine)
 

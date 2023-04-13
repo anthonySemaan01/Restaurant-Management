@@ -10,11 +10,15 @@ import json
 from fastapi import File
 from PIL import Image
 import io
+from persistence.services.path_service import AbstractPathService
 
 model = get_yolov5()
 
 
 class TableDetection(AbstractTableDetection):
+    def __init__(self, path_service: AbstractPathService):
+        self.path_service = path_service
+
     def detect_tables_return_json(self, image: bytes = File(...)):
         input_image = get_image_from_bytes(image)
         results = model(input_image)

@@ -1,12 +1,18 @@
+import os
+
 from domain.contracts.services.abstract_user_management import AbstractUserManagement
 from sqlalchemy.orm import Session
 import persistence.sql_app.models as models
 from domain.models.user_sign_up_request import UserSignUpRequest
-from domain.exceptions.user_exception import UserSignInException, UserSignUpException
+from domain.exceptions.user_exception import UserSignUpException
+from domain.contracts.repositories.abstract_path_service import AbstractPathService
 from fastapi import UploadFile, File
 
 
 class UserManagement(AbstractUserManagement):
+    def __init__(self, path_service: AbstractPathService):
+        self.path_service = path_service
+
     def get_user_by_id(self, db: Session):
         pass
 
@@ -16,14 +22,12 @@ class UserManagement(AbstractUserManagement):
     def user_sign_in(self, db: Session):
         pass
 
-    def user_sign_up(self, db: Session, user_sign_up_request: UserSignUpRequest, image: UploadFile = File(...)):
-
+    def user_sign_up(self, db: Session, user_sign_up_request: UserSignUpRequest):
         try:
             new_customer = models.Customer(email=user_sign_up_request.email, password=user_sign_up_request.password,
                                            phone_nb=user_sign_up_request.password,
                                            first_name=user_sign_up_request.first_name,
                                            last_name=user_sign_up_request.last_name,
-                                           picture=user_sign_up_request.picture,
                                            date_of_birth=user_sign_up_request.date_of_birth)
             db.add(new_customer)
             db.commit()

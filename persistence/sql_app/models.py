@@ -34,7 +34,7 @@ class Customer(Base):
     phone_nb = Column(String(20), nullable=False)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
-    picture = Column(LargeBinary)
+    picture = Column(String(255))
     date_of_birth = Column(DateTime, nullable=False)
 
     reservations = relationship('Reservation', back_populates='customer')
