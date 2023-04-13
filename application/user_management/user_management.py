@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 import persistence.sql_app.models as models
 from domain.models.user_sign_up_request import UserSignUpRequest
 from domain.exceptions.user_exception import UserSignInException, UserSignUpException
+from fastapi import UploadFile, File
 
 
 class UserManagement(AbstractUserManagement):
@@ -15,7 +16,7 @@ class UserManagement(AbstractUserManagement):
     def user_sign_in(self, db: Session):
         pass
 
-    def user_sign_up(self, db: Session, user_sign_up_request: UserSignUpRequest):
+    def user_sign_up(self, db: Session, user_sign_up_request: UserSignUpRequest, image: UploadFile = File(...)):
 
         try:
             new_customer = models.Customer(email=user_sign_up_request.email, password=user_sign_up_request.password,
