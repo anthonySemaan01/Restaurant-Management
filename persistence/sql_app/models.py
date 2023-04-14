@@ -144,7 +144,7 @@ class Table(Base):
     table_id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     restaurant_id = Column(Integer, ForeignKey('Restaurant.restaurant_id'), nullable=False)
     capacity = Column(Integer, nullable=False)
-    location = Column(String(255), nullable=False)
+    location = Column(JSON, nullable=False)
 
     restaurant = relationship('Restaurant', back_populates='tables')
     orders = relationship('Order', back_populates='table')
