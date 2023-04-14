@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from sqlalchemy.orm import Session
 from domain.models.user_sign_up_request import UserSignUpRequest
-from fastapi import UploadFile
+from fastapi import UploadFile, File
 
 
 class AbstractUserManagement(ABC):
@@ -23,4 +23,8 @@ class AbstractUserManagement(ABC):
 
     @abstractmethod
     def user_sign_up(self, db: Session, user_sign_up_request: UserSignUpRequest):
+        pass
+
+    @abstractmethod
+    def upload_profile_image(self, db: Session, user_id: int, image: UploadFile):
         pass
