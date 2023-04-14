@@ -6,8 +6,6 @@ from domain.models.user_sign_up_request import UserSignUpRequest, UserUploadImag
 from persistence.repositories.api_response import ApiResponse
 from domain.contracts.services.abstract_user_management import AbstractUserManagement
 from dependency_injector.wiring import inject, Provide
-from typing import Optional
-from sqlalchemy import Integer
 
 router = APIRouter()
 

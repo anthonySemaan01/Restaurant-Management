@@ -9,6 +9,9 @@ from application.table_detection.table_detection import TableDetection
 from domain.contracts.repositories.abstract_path_service import AbstractPathService
 from persistence.services.path_service import PathService
 
+from domain.contracts.services.abstract_restaurant_management import AbstractRestaurantManagement
+from application.restaurant_management.restaurant_management import RestaurantManagement
+
 
 class Services(containers.DeclarativeContainer):
     # services
@@ -18,4 +21,5 @@ class Services(containers.DeclarativeContainer):
 
     table_detection = providers.Singleton(AbstractTableDetection.register(TableDetection), path_service=paths_service)
 
-
+    restaurant_management = providers.Singleton(AbstractRestaurantManagement.register(RestaurantManagement),
+                                                path_service=paths_service)

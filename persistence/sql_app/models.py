@@ -52,7 +52,7 @@ class Restaurant(Base):
         Enum('American', 'Chinese', 'French', 'Indian', 'Italian', 'Japanese', 'Mexican', 'Middle Eastern'),
         nullable=False)
     website = Column(String(255))
-    social_media_pages = Column(String(255))
+    social_media_pages = Column(JSON)
     hours_of_operation = Column(String(255))
     images = Column(JSON)
 
