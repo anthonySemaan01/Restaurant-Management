@@ -7,6 +7,7 @@ from domain.contracts.repositories.abstract_path_service import AbstractPathServ
 from domain.models.staff_sign_up_request import StaffSignUpRequest
 from domain.exceptions.staff_exception import StaffSignInException, StaffSignUpException
 from shared.helpers.image_handler import load_image, save_image
+from domain.models.staff_sign_in_request import StaffSignInRequest
 
 
 class StaffManagement(AbstractStaffManagement):
@@ -17,11 +18,19 @@ class StaffManagement(AbstractStaffManagement):
         data = db.query(models.Staff).all()
         return data
 
-    def get_staff_by_id(self, db: Session, user_id: int):
-        pass
+    def get_staff_by_id(self, db: Session, staff_id: int):
+        staff = db.query(models.Staff).filter_by(staff_id=staff_id).first()
+        if staff.picture:
+            staff.picture = load_image(staff.picture)
+        return staff
 
-    def staff_sign_in(self, db: Session):
-        pass
+    def staff_sign_in(self, db: Session, staff_sign_in_request: StaffSignInRequest):
+        staff = db.query(models.Staff).filter_by(email=staff_sign_in_request.email).first()
+        if staff is not None:
+            if staff_sign_in_request.password == staff.password:
+                return True, staff.customer_id
+
+        return False, -1
 
     def staff_sign_up(self, db: Session, staff_sign_up_request: StaffSignUpRequest):
         try:

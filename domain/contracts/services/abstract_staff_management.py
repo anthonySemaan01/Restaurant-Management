@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from sqlalchemy.orm import Session
 from domain.models.staff_sign_up_request import StaffSignUpRequest
 from fastapi import UploadFile, File
+from domain.models.staff_sign_in_request import StaffSignInRequest
 
 
 class AbstractStaffManagement(ABC):
@@ -14,7 +15,7 @@ class AbstractStaffManagement(ABC):
         pass
 
     @abstractmethod
-    def staff_sign_in(self, db: Session):
+    def staff_sign_in(self, db: Session, staff_sign_in_request: StaffSignInRequest):
         pass
 
     @abstractmethod
