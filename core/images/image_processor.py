@@ -13,5 +13,5 @@ def get_image_from_bytes(binary_image, max_size=1024):
             int(input_image.height * resize_factor),
         )
     )
-    return resized_image
+    return resized_image, resized_image.width, resized_image.height
 

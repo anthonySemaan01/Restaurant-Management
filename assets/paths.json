@@ -1,4 +1,5 @@
 {
   "restaurants_images_path": "data/images/restaurants",
-  "users_images_path": "data/images/users"
+  "users_images_path": "data/images/users",
+  "staffs_images_path": "data/images/staffs"
 }

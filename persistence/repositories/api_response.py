@@ -8,4 +8,4 @@ class ApiResponse:
         """
         self.data: str = data
         self.error: Exception = error.__str__() if error is not None else ''
-        self.success: bool = True
+        self.success: bool = success

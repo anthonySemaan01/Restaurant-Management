@@ -43,8 +43,9 @@ class RestaurantManagement(AbstractRestaurantManagement):
                                                social_media_pages=add_restaurant_request.social_media_pages,
                                                hours_of_operation=add_restaurant_request.hours_of_operation,
                                                images=json.dumps([]))
-
-            # TODO add restaurant to table of manager using manager id
+            # TODO check if it is correct
+            manager = db.query(models.Manager).filter_by(manager_id=add_restaurant_request.manager_id).first()
+            manager.restaurant = new_restaurant
             db.add(new_restaurant)
             db.commit()
         except Exception as e:

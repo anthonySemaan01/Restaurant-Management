@@ -12,6 +12,9 @@ from persistence.services.path_service import PathService
 from domain.contracts.services.abstract_restaurant_management import AbstractRestaurantManagement
 from application.restaurant_management.restaurant_management import RestaurantManagement
 
+from domain.contracts.services.abstract_staff_management import AbstractStaffManagement
+from application.staff_management.staff_management import StaffManagement
+
 
 class Services(containers.DeclarativeContainer):
     # services
@@ -23,3 +26,6 @@ class Services(containers.DeclarativeContainer):
 
     restaurant_management = providers.Singleton(AbstractRestaurantManagement.register(RestaurantManagement),
                                                 path_service=paths_service)
+
+    staff_management = providers.Singleton(AbstractStaffManagement.register(StaffManagement),
+                                           paths_service=paths_service)

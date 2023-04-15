@@ -54,6 +54,7 @@ class Restaurant(Base):
     website = Column(String(255))
     social_media_pages = Column(JSON)
     hours_of_operation = Column(String(255))
+    dimensions = Column(JSON)
     images = Column(JSON)
 
     managers = relationship('Manager', back_populates='restaurant')

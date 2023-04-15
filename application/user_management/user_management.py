@@ -9,20 +9,27 @@ from domain.contracts.repositories.abstract_path_service import AbstractPathServ
 from fastapi import UploadFile, File
 from sqlalchemy import create_engine, Column, Integer, String
 from shared.helpers.image_handler import load_image, save_image
+from domain.models.user_sign_in_request import UserSignInRequest
 
 
 class UserManagement(AbstractUserManagement):
     def __init__(self, path_service: AbstractPathService):
         self.path_service = path_service
 
-    def get_user_by_id(self, db: Session):
-        pass
+    def get_user_by_id(self, db: Session, customer_id: int):
+        customer = db.query(models.Customer).filter_by(customer_id=customer_id).first()
+        if customer.picture:
+            customer.picture = load_image(customer.picture)
+        return customer
 
-    def get_user_by_name(self, db: Session):
-        pass
+    def user_sign_in(self, db: Session, user_sign_in_request: UserSignInRequest):
+        customer = db.query(models.Customer).filter_by(email=user_sign_in_request.email).first()
+        print(customer)
+        if customer is not None:
+            if user_sign_in_request.password == customer.password:
+                return True, customer.customer_id
 
-    def user_sign_in(self, db: Session):
-        pass
+        return False, -1
 
     def user_sign_up(self, db: Session, user_sign_up_request: UserSignUpRequest):
         try:

@@ -7,6 +7,7 @@ import json
 from fastapi import File
 from PIL import Image
 import io
+import persistence.sql_app.models as models
 from persistence.services.path_service import AbstractPathService
 
 model = get_yolov5()
@@ -17,18 +18,24 @@ class TableDetection(AbstractTableDetection):
         self.path_service = path_service
 
     def detect_tables_return_json(self, db: Session, restaurant_id: int = None, image: bytes = File(...)):
-        input_image = get_image_from_bytes(image)
+        input_image, input_image_width, input_image_height = get_image_from_bytes(image)
         results = model(input_image)
         detect_res = results.pandas().xyxy[0].to_json(orient="records")
         detect_res = json.loads(detect_res)
-        data_extracted = detect_res["data"]
-        # for table in data_extracted:
-        #     new_table = db.
-            # TODO insert tables
+        restaurant = db.query(models.Restaurant).filter_by(restaurant_id=restaurant_id).first()
+        restaurant.dimensions = {"width": input_image_width, "height": input_image_height}
+        db.commit()
+
+        for table in detect_res:
+            print(table)
+            print(type(table))
+            new_table = models.Table(restaurant_id=restaurant_id, capacity=4, location=table)
+            db.add(new_table)
+        db.commit()
         return detect_res
 
     def detect_tables_return_image(self, image: bytes = File(...)):
-        input_image = get_image_from_bytes(image)
+        input_image, width, height = get_image_from_bytes(image)
         results = model(input_image)
         results.render()
         for img in results.ims:
