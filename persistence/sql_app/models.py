@@ -48,9 +48,10 @@ class Restaurant(Base):
     name = Column(String(255), nullable=False)
     address = Column(String(255), nullable=False)
     phone_number = Column(String(255), nullable=False)
-    cuisine = Column(
-        Enum('American', 'Chinese', 'French', 'Indian', 'Italian', 'Japanese', 'Mexican', 'Middle Eastern'),
-        nullable=False)
+    # cuisine = Column(
+    #     Enum('American', 'Chinese', 'French', 'Indian', 'Italian', 'Japanese', 'Mexican', 'Middle Eastern'),
+    #     nullable=False)
+    cuisine = Column(JSON)
     website = Column(String(255))
     social_media_pages = Column(JSON)
     hours_of_operation = Column(String(255))

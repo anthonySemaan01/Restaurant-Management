@@ -6,7 +6,7 @@ class AddRestaurantRequest(BaseModel):
     name: str
     address: str
     phone_number: str
-    cuisine: str
+    cuisine: List[str]
     website: str
     social_media_pages: dict
     hours_of_operation: str

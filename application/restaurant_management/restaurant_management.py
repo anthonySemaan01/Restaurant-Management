@@ -21,6 +21,7 @@ class RestaurantManagement(AbstractRestaurantManagement):
         restaurants = db.query(models.Restaurant).all()
         for restaurant in restaurants:
             images_of_restaurant = []
+            review = restaurant.reviews
             for image in json.loads(restaurant.images):
                 images_of_restaurant.append(load_image(image["img_path"]))
             restaurant.images = images_of_restaurant
@@ -28,10 +29,13 @@ class RestaurantManagement(AbstractRestaurantManagement):
 
     def get_restaurant_by_id(self, restaurant_id: int, db: Session):
         restaurant = db.query(models.Restaurant).filter_by(restaurant_id=restaurant_id).first()
+
         images_of_restaurant = []
         for image in json.loads(restaurant.images):
             images_of_restaurant.append(load_image(image["img_path"]))
         restaurant.images = images_of_restaurant
+        tables = restaurant.tables
+        reviews = restaurant.reviews
         return restaurant
 
     def add_restaurant(self, db: Session, add_restaurant_request: AddRestaurantRequest):
