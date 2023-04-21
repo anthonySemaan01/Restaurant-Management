@@ -13,7 +13,7 @@ class StaffSignUpRequest(BaseModel):
     date_of_birth: date = datetime.date.today()
 
 
-class UserUploadImage(BaseModel):
+class StaffUploadImage(BaseModel):
     id: int
 
 

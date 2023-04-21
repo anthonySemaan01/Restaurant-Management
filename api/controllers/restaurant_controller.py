@@ -6,6 +6,7 @@ from persistence.repositories.api_response import ApiResponse
 from domain.contracts.services.abstract_restaurant_management import AbstractRestaurantManagement
 from dependency_injector.wiring import inject, Provide
 from domain.models.add_restaurant_request import AddRestaurantRequest, AddRestaurantImagesRequest
+from domain.models.add_dishes_request import AddDishesRequest, DishUploadImage
 from typing import List
 
 router = APIRouter()
@@ -43,3 +44,21 @@ async def add_images_restaurant(add_restaurant_images_request: AddRestaurantImag
     return restaurant_management.add_images_restaurant(db=db,
                                                        restaurant_id=add_restaurant_images_request.restaurant_id,
                                                        images=images)
+
+
+@router.post("/add_dishes")
+@inject
+async def add_dishes(add_dishes_request: AddDishesRequest,
+                     db: Session = Depends(get_db),
+                     restaurant_management: AbstractRestaurantManagement = Depends(
+                         Provide[Services.restaurant_management])):
+    return restaurant_management.add_dishes(db=db, add_dishes_request=add_dishes_request)
+
+
+@router.post("/add_dish_image")
+@inject
+async def add_dish_image(image: UploadFile, dish_id: DishUploadImage = Depends(),
+                         db: Session = Depends(get_db),
+                         restaurant_management: AbstractRestaurantManagement = Depends(
+                             Provide[Services.restaurant_management])):
+    return restaurant_management.upload_dish_image(db=db, dish_id=dish_id.dish_id, image=image)

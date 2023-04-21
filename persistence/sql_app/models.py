@@ -67,8 +67,8 @@ class Staff(Base):
     __tablename__ = 'Staff'
 
     staff_id = Column(Integer, primary_key=True, autoincrement=True)
-    manager_id = Column(Integer, ForeignKey('Manager.manager_id'), nullable=False)
-    restaurant_id = Column(Integer, ForeignKey('Restaurant.restaurant_id'), nullable=False)
+    manager_id = Column(Integer, ForeignKey('Manager.manager_id'))
+    restaurant_id = Column(Integer, ForeignKey('Restaurant.restaurant_id'))
     email = Column(String(255), nullable=False)
     password = Column(String(255), nullable=False)
     phone_nb = Column(String(255), nullable=False)
@@ -111,6 +111,7 @@ class Dish(Base):
     name = Column(String(255), nullable=False)
     description = Column(String(255), nullable=False)
     price = Column(Numeric(10, 2), nullable=False)
+    picture = Column(String(255))
 
     restaurant = relationship('Restaurant', back_populates='dishes')
     orders = relationship("Order", secondary="order_dish", back_populates="dishes")
@@ -157,7 +158,7 @@ class Review(Base):
     review_id = Column(Integer, primary_key=True, autoincrement=True)
     restaurant_id = Column(Integer, ForeignKey('Restaurant.restaurant_id'), nullable=False)
     customer_id = Column(Integer, ForeignKey('Customer.customer_id'), nullable=False)
-    rating = Column(Enum('0', '0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5'), nullable=False)
+    rating = Column(Enum('0', '1', '2', '3', '4', '5'), nullable=False)
     comment = Column(Text)
     restaurant = relationship('Restaurant', back_populates='reviews')
     customer = relationship('Customer', back_populates='reviews')

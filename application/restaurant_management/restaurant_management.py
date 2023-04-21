@@ -9,6 +9,7 @@ from fastapi import UploadFile, File
 from domain.exceptions.restaurant_exception import AddRestaurantException
 from shared.helpers.image_handler import load_image, save_image
 from domain.models.restaurant_images_parameters import IndividualImagesParameters, RestaurantImagesParameters
+from domain.models.add_dishes_request import AddDishesRequest
 import json
 
 
@@ -29,17 +30,26 @@ class RestaurantManagement(AbstractRestaurantManagement):
 
     def get_restaurant_by_id(self, restaurant_id: int, db: Session):
         restaurant = db.query(models.Restaurant).filter_by(restaurant_id=restaurant_id).first()
-
+        avg_rating = 0
         images_of_restaurant = []
         for image in json.loads(restaurant.images):
             images_of_restaurant.append(load_image(image["img_path"]))
         restaurant.images = images_of_restaurant
         tables = restaurant.tables
-        reviews = restaurant.reviews
-        dishes = restaurant.dishes
+        for review in restaurant.reviews:
+            customer_review = review.customer.first_name
+
+            avg_rating += int(review.rating)
+        if len(restaurant.reviews) != 0:
+            avg_rating = avg_rating / len(restaurant.reviews)
+        for dish in restaurant.dishes:
+            if dish.picture is not None:
+                dish.picture = load_image(dish.picture)
         staffs = restaurant.staffs
         managers = restaurant.managers
-        return restaurant
+        response_dict = restaurant.__dict__
+        response_dict["avg_rating"] = avg_rating
+        return response_dict
 
     def add_restaurant(self, db: Session, add_restaurant_request: AddRestaurantRequest):
         try:
@@ -50,14 +60,14 @@ class RestaurantManagement(AbstractRestaurantManagement):
                                                social_media_pages=add_restaurant_request.social_media_pages,
                                                hours_of_operation=add_restaurant_request.hours_of_operation,
                                                images=json.dumps([]))
-
+            db.add(new_restaurant)
+            db.commit()
             staff = db.query(models.Staff).filter_by(staff_id=add_restaurant_request.staff_id).first()
-            new_manager = models.Manager(restaurant_id=staff.restaurant_id, email=staff.email,
+            new_manager = models.Manager(restaurant_id=new_restaurant.restaurant_id, email=staff.email,
                                          password=staff.password, phone_nb=staff.phone_nb,
                                          first_name=staff.first_name, last_name=staff.last_name,
                                          date_of_birth=staff.date_of_birth, picture=staff.picture)
             # db.delete(staff)
-            db.add(new_restaurant)
             db.add(new_manager)
             db.commit()
         except Exception as e:
@@ -85,4 +95,27 @@ class RestaurantManagement(AbstractRestaurantManagement):
         db.commit()
         to_return = db.query(models.Restaurant).filter_by(restaurant_id=restaurant_id).first()
         to_return.images = [load_image(x["img_path"]) for x in json.loads(to_return.images)]
+        return to_return
+
+    def add_dishes(self, db: Session, add_dishes_request: AddDishesRequest):
+        restaurant_id = add_dishes_request.restaurant_id
+        new_dish = models.Dish(restaurant_id=restaurant_id, name=add_dishes_request.name,
+                               price=add_dishes_request.price,
+                               description=add_dishes_request.description)
+        db.add(new_dish)
+        db.commit()
+        return db.query(models.Restaurant).filter_by(restaurant_id=restaurant_id).first().dishes
+
+    def upload_dish_image(self, db: Session, dish_id: int, image: UploadFile):
+        image_destination = os.path.join(os.getcwd(), self.path_service.paths.dishes_images_path, f"img{dish_id}.png")
+
+        if os.path.exists(image_destination):
+            os.remove(image_destination)
+        save_image(image, image_destination)
+        dish = db.query(models.Dish).filter_by(dish_id=dish_id).first()
+        dish.picture = image_destination
+        db.commit()
+
+        to_return = db.query(models.Dish).filter_by(dish_id=dish_id).first()
+        to_return.picture = load_image(to_return.picture)
         return to_return
