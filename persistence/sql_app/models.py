@@ -158,7 +158,7 @@ class Review(Base):
     review_id = Column(Integer, primary_key=True, autoincrement=True)
     restaurant_id = Column(Integer, ForeignKey('Restaurant.restaurant_id'), nullable=False)
     customer_id = Column(Integer, ForeignKey('Customer.customer_id'), nullable=False)
-    rating = Column(Enum('0', '1', '2', '3', '4', '5'), nullable=False)
+    rating = Column(Integer, nullable=False)
     comment = Column(Text)
     restaurant = relationship('Restaurant', back_populates='reviews')
     customer = relationship('Customer', back_populates='reviews')

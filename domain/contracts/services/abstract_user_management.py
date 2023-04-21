@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from domain.models.user_sign_up_request import UserSignUpRequest
 from fastapi import UploadFile
 from domain.models.user_sign_in_request import UserSignInRequest
+from domain.models.review_restaurant_request import ReviewRestaurantRequest
 
 
 class AbstractUserManagement(ABC):
@@ -24,4 +25,8 @@ class AbstractUserManagement(ABC):
 
     @abstractmethod
     def upload_profile_image(self, db: Session, user_id: int, image: UploadFile):
+        pass
+
+    @abstractmethod
+    def review_restaurant(self, db: Session, review_restaurant_request: ReviewRestaurantRequest):
         pass

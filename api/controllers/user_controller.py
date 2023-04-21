@@ -7,6 +7,7 @@ from persistence.repositories.api_response import ApiResponse
 from domain.contracts.services.abstract_user_management import AbstractUserManagement
 from dependency_injector.wiring import inject, Provide
 from domain.models.user_sign_in_request import UserSignInRequest
+from domain.models.review_restaurant_request import ReviewRestaurantRequest
 
 router = APIRouter()
 
@@ -65,3 +66,11 @@ async def user_upload_profile_image(image: UploadFile, user_id: UserUploadImage 
         return ApiResponse(success=True, data=user)
     except Exception as e:
         return ApiResponse(success=False, error=e.__str__())
+
+
+@router.post("/review_restaurant")
+@inject
+async def review_restaurant(review_restaurant_request: ReviewRestaurantRequest, db: Session = Depends(get_db),
+                            user_management: AbstractUserManagement = Depends(
+                                Provide[Services.user_management])):
+    return user_management.review_restaurant(db=db, review_restaurant_request=review_restaurant_request)

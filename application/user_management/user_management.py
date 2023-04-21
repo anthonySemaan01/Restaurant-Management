@@ -3,6 +3,7 @@ import os
 from domain.contracts.services.abstract_user_management import AbstractUserManagement
 from sqlalchemy.orm import Session
 import persistence.sql_app.models as models
+from domain.models.review_restaurant_request import ReviewRestaurantRequest
 from domain.models.user_sign_up_request import UserSignUpRequest
 from domain.exceptions.user_exception import UserSignUpException
 from domain.contracts.repositories.abstract_path_service import AbstractPathService
@@ -13,6 +14,7 @@ from domain.models.user_sign_in_request import UserSignInRequest
 
 
 class UserManagement(AbstractUserManagement):
+
     def __init__(self, path_service: AbstractPathService):
         self.path_service = path_service
 
@@ -62,3 +64,12 @@ class UserManagement(AbstractUserManagement):
     def get_all_users(self, db: Session):
         data = db.query(models.Customer).all()
         return data
+
+    def review_restaurant(self, db: Session, review_restaurant_request: ReviewRestaurantRequest):
+        new_review = models.Review(restaurant_id=review_restaurant_request.restaurant_id,
+                                   customer_id=review_restaurant_request.customer_id,
+                                   rating=review_restaurant_request.rating, comment=review_restaurant_request.comment)
+        db.add(new_review)
+        db.commit()
+        print(new_review.review_id)
+        return new_review
