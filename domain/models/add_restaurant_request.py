@@ -10,7 +10,7 @@ class AddRestaurantRequest(BaseModel):
     website: str
     social_media_pages: dict
     hours_of_operation: str
-    manager_id: int
+    staff_id: int
 
 
 class AddRestaurantImagesRequest(BaseModel):

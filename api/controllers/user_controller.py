@@ -11,7 +11,7 @@ from domain.models.user_sign_in_request import UserSignInRequest
 router = APIRouter()
 
 
-@router.get("/customer_by_id")
+@router.get("/get_by_id")
 @inject
 async def get_customer_by_id(customer_id: int, db: Session = Depends(get_db),
                              user_management: AbstractUserManagement = Depends(
@@ -19,14 +19,14 @@ async def get_customer_by_id(customer_id: int, db: Session = Depends(get_db),
     return user_management.get_user_by_id(customer_id=customer_id, db=db)
 
 
-@router.get("/all_customers")
+@router.get("/get_all")
 @inject
 async def get_all_users(db: Session = Depends(get_db), user_management: AbstractUserManagement = Depends(
     Provide[Services.user_management])):
     return user_management.get_all_users(db)
 
 
-@router.post("/user_sign_up")
+@router.post("/sign_up")
 @inject
 async def user_sign_up(user_sign_up_request: UserSignUpRequest, db: Session = Depends(get_db),
                        user_management: AbstractUserManagement = Depends(
@@ -38,7 +38,7 @@ async def user_sign_up(user_sign_up_request: UserSignUpRequest, db: Session = De
         return ApiResponse(success=False, error=e.__str__())
 
 
-@router.post("/user_sign_in")
+@router.post("/sign_in")
 @inject
 async def user_sign_in(user_sign_in_request: UserSignInRequest, db: Session = Depends(get_db),
                        user_management: AbstractUserManagement = Depends(
@@ -54,7 +54,7 @@ async def user_sign_in(user_sign_in_request: UserSignInRequest, db: Session = De
         return ApiResponse(success=False, error=e.__str__())
 
 
-@router.post("/user_upload_profile_picture")
+@router.post("/upload_profile_picture")
 @inject
 async def user_upload_profile_image(image: UploadFile, user_id: UserUploadImage = Depends(),
                                     db: Session = Depends(get_db),

@@ -26,6 +26,7 @@ class StaffManagement(AbstractStaffManagement):
 
     def staff_sign_in(self, db: Session, staff_sign_in_request: StaffSignInRequest):
         staff = db.query(models.Staff).filter_by(email=staff_sign_in_request.email).first()
+
         if staff is not None:
             if staff_sign_in_request.password == staff.password:
                 return True, staff.customer_id

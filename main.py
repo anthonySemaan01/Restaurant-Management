@@ -1,7 +1,8 @@
 import uvicorn
 from fastapi import FastAPI, File
 from starlette.middleware.cors import CORSMiddleware
-from api.controllers import health_check_controller, user_controller, table_detection_controller, restaurant_controller
+from api.controllers import health_check_controller, user_controller, table_detection_controller, restaurant_controller, \
+    staff_controller
 from persistence.sql_app.database import engine, SessionLocal
 from persistence.sql_app import models
 from containers import Services
@@ -12,7 +13,8 @@ app = FastAPI(version='1.0', title='Restaurant Management Backend',
 services = Services()
 
 services.wire(
-    modules=[health_check_controller, user_controller, table_detection_controller, restaurant_controller])
+    modules=[health_check_controller, user_controller, table_detection_controller, restaurant_controller,
+             staff_controller])
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -33,6 +35,12 @@ app.include_router(
     router=user_controller.router,
     prefix="/user",
     tags=["user"],
+)
+
+app.include_router(
+    router=staff_controller.router,
+    prefix="/staff",
+    tags=["staff"],
 )
 
 app.include_router(

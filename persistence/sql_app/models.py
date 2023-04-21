@@ -17,7 +17,7 @@ class Manager(Base):
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
     date_of_birth = Column(DateTime, nullable=False)
-    picture = Column(JSON)
+    picture = Column(String(255))
 
     restaurant = relationship('Restaurant', back_populates='managers')
     reservations = relationship("Reservation", secondary="manager_reservation", back_populates="managers")
@@ -48,9 +48,7 @@ class Restaurant(Base):
     name = Column(String(255), nullable=False)
     address = Column(String(255), nullable=False)
     phone_number = Column(String(255), nullable=False)
-    # cuisine = Column(
-    #     Enum('American', 'Chinese', 'French', 'Indian', 'Italian', 'Japanese', 'Mexican', 'Middle Eastern'),
-    #     nullable=False)
+
     cuisine = Column(JSON)
     website = Column(String(255))
     social_media_pages = Column(JSON)
@@ -77,7 +75,7 @@ class Staff(Base):
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
     date_of_birth = Column(DateTime, nullable=False)
-    picture = Column(JSON)
+    picture = Column(String(255))
 
     restaurant = relationship('Restaurant', back_populates='staffs')
     reservations = relationship("Reservation", secondary="staff_reservation", back_populates="staffs")

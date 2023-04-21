@@ -36,6 +36,9 @@ class RestaurantManagement(AbstractRestaurantManagement):
         restaurant.images = images_of_restaurant
         tables = restaurant.tables
         reviews = restaurant.reviews
+        dishes = restaurant.dishes
+        staffs = restaurant.staffs
+        managers = restaurant.managers
         return restaurant
 
     def add_restaurant(self, db: Session, add_restaurant_request: AddRestaurantRequest):
@@ -47,10 +50,15 @@ class RestaurantManagement(AbstractRestaurantManagement):
                                                social_media_pages=add_restaurant_request.social_media_pages,
                                                hours_of_operation=add_restaurant_request.hours_of_operation,
                                                images=json.dumps([]))
-            # TODO check if it is correct
-            manager = db.query(models.Manager).filter_by(manager_id=add_restaurant_request.manager_id).first()
-            manager.restaurant = new_restaurant
+
+            staff = db.query(models.Staff).filter_by(staff_id=add_restaurant_request.staff_id).first()
+            new_manager = models.Manager(restaurant_id=staff.restaurant_id, email=staff.email,
+                                         password=staff.password, phone_nb=staff.phone_nb,
+                                         first_name=staff.first_name, last_name=staff.last_name,
+                                         date_of_birth=staff.date_of_birth, picture=staff.picture)
+            # db.delete(staff)
             db.add(new_restaurant)
+            db.add(new_manager)
             db.commit()
         except Exception as e:
             raise AddRestaurantException(additional_message=e.__str__())

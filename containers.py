@@ -28,4 +28,4 @@ class Services(containers.DeclarativeContainer):
                                                 path_service=paths_service)
 
     staff_management = providers.Singleton(AbstractStaffManagement.register(StaffManagement),
-                                           paths_service=paths_service)
+                                           path_service=paths_service)

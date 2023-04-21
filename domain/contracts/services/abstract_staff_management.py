@@ -11,7 +11,7 @@ class AbstractStaffManagement(ABC):
         pass
 
     @abstractmethod
-    def get_staff_by_id(self, db: Session, user_id: int):
+    def get_staff_by_id(self, db: Session, staff_id: int):
         pass
 
     @abstractmethod

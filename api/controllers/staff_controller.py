@@ -6,23 +6,23 @@ from domain.models.user_sign_up_request import UserSignUpRequest, UserUploadImag
 from persistence.repositories.api_response import ApiResponse
 from domain.contracts.services.abstract_user_management import AbstractUserManagement
 from dependency_injector.wiring import inject, Provide
-from domain.models.user_sign_in_request import UserSignInRequest
+from domain.contracts.services.abstract_staff_management import AbstractStaffManagement
 
 router = APIRouter()
 
 
-@router.get("/customer_by_id")
+@router.get("/get_by_id")
 @inject
-async def get_customer_by_id(customer_id: int, db: Session = Depends(get_db),
-                             user_management: AbstractUserManagement = Depends(
-                                 Provide[Services.user_management])):
-    return user_management.get_user_by_id(customer_id=customer_id, db=db)
+async def get_staff_by_id(staff_id: int, db: Session = Depends(get_db),
+                          staff_management: AbstractStaffManagement = Depends(
+                              Provide[Services.staff_management])):
+    return staff_management.get_staff_by_id(staff_id=staff_id, db=db)
 
 
-@router.get("/all_customers")
+@router.get("/get_all")
 @inject
-async def get_all_users(db: Session = Depends(get_db), user_management: AbstractUserManagement = Depends(
-    Provide[Services.user_management])):
-    return user_management.get_all_users(db)
+async def get_all_staffs(db: Session = Depends(get_db), staff_management: AbstractStaffManagement = Depends(
+    Provide[Services.staff_management])):
+    return staff_management.get_all_staff(db)
 
 # TODO put staff application endpoints
