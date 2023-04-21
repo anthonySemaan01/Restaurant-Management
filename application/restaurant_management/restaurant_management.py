@@ -20,12 +20,27 @@ class RestaurantManagement(AbstractRestaurantManagement):
 
     def get_all_restaurants(self, db: Session):
         restaurants = db.query(models.Restaurant).all()
+        restaurant_list = list(restaurants)
+        avg_rating_list: list = []
         for restaurant in restaurants:
+            avg_rating = 0
             images_of_restaurant = []
-            review = restaurant.reviews
+            reviews = restaurant.reviews
+            for review in reviews:
+                avg_rating += int(review.rating)
+            if len(reviews) != 0:
+                avg_rating = avg_rating / len(reviews)
+
+            avg_rating_list.append(avg_rating)
             for image in json.loads(restaurant.images):
                 images_of_restaurant.append(load_image(image["img_path"]))
             restaurant.images = images_of_restaurant
+
+        restaurants = list(restaurants)
+        for index, restaurant in enumerate(restaurants):
+            print(type(restaurant))
+            restaurant = restaurant.__dict__
+            restaurant["avg_rating"] = avg_rating_list[index]
         return restaurants
 
     def get_restaurant_by_id(self, restaurant_id: int, db: Session):
