@@ -1,3 +1,5 @@
+import datetime
+
 from fastapi import APIRouter, UploadFile, Depends, File
 from persistence.sql_app.db_dependency import get_db
 from sqlalchemy.orm import Session
@@ -64,9 +66,19 @@ async def add_dish_image(image: UploadFile, dish_id: DishUploadImage = Depends()
     return restaurant_management.upload_dish_image(db=db, dish_id=dish_id.dish_id, image=image)
 
 
-@router.post("/get_date_time")
+@router.get("/get_date_time")
 @inject
 async def get_date_time(restaurant_id: int, db: Session = Depends(get_db),
                         restaurant_management: AbstractRestaurantManagement = Depends(
                             Provide[Services.restaurant_management])):
     return restaurant_management.get_dates(restaurant_id=restaurant_id, db=db)
+
+
+@router.get("/get_available_tables")
+@inject
+async def get_available_tables(restaurant_id: int,
+                               date_time: datetime.datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                               db: Session = Depends(get_db),
+                               restaurant_management: AbstractRestaurantManagement = Depends(
+                                   Provide[Services.restaurant_management])):
+    return restaurant_management.get_available_tables_at_time(restaurant_id=restaurant_id, date_time=date_time, db=db)

@@ -168,14 +168,9 @@ class RestaurantManagement(AbstractRestaurantManagement):
         for table_id in table_ids_in_restaurant:
             reservations_on_tables[table_id] = []
 
-        print(reservations_on_tables)
-        print(type(reservations_on_tables))
         for reservation in reservations:
-            print(reservation.reservation_time, reservation.table_id)
             if reservation.table_id in table_ids_in_restaurant:
                 reservations_on_tables[reservation.table_id].append(reservation.reservation_time)
-
-        print(reservations_on_tables)
 
         # create a dictionary with the days that have a value of 1
         days_with_1 = {k: v for k, v in day_counts.items() if v == 1}
@@ -183,8 +178,6 @@ class RestaurantManagement(AbstractRestaurantManagement):
         # create a dictionary to store datetime objects for each day
         datetime_dict = {}
 
-        # loop through each day with a value of 1 and create datetime objects for each hour from 9am to 11pm
-        # loop through each day with a value of 1 and create datetime objects for each hour from 9am to 11pm
         for day in days_with_1:
             datetime_list = []
             for hour in range(9, 24):
@@ -192,7 +185,6 @@ class RestaurantManagement(AbstractRestaurantManagement):
                 datetime_list.append({"time": dt, "available": 0})
             datetime_dict[day] = datetime_list
 
-        print(datetime_dict)
         for date, times in datetime_dict.items():
             for time_availability in times:
                 time = time_availability["time"]
@@ -215,4 +207,15 @@ class RestaurantManagement(AbstractRestaurantManagement):
         return to_be_returned
 
     def get_available_tables_at_time(self, db: Session, restaurant_id, date_time: datetime.datetime):
-        pass
+        tables = db.query(models.Table).filter_by(restaurant_id=restaurant_id).all()
+        tables_ids: list = [table.table_id for table in tables]
+        reservations = db.query(models.Reservation).filter(
+            models.Reservation.table_id.in_(tables_ids)).all()
+        to_be_returned: dict = {}
+        for table_id in tables_ids:
+            to_be_returned[table_id] = 1
+        for reservation in reservations:
+            if reservation.reservation_time == date_time:
+                to_be_returned[reservation.table_id] = 0
+
+        return to_be_returned
