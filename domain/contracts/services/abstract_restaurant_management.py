@@ -31,3 +31,7 @@ class AbstractRestaurantManagement(ABC):
     @abstractmethod
     def upload_dish_image(self, db: Session, dish_id: int, image: UploadFile):
         pass
+
+    @abstractmethod
+    def get_dates(self, restaurant_id: int, db:Session):
+        pass

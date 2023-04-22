@@ -129,9 +129,9 @@ class Reservation(Base):
     reservation_id = Column(Integer, primary_key=True, autoincrement=True)
     table_id = Column(Integer, ForeignKey('Table.table_id'), nullable=False)
     customer_id = Column(Integer, ForeignKey('Customer.customer_id'), nullable=False)
-    id_proc = Column(Integer, ForeignKey('Staff.staff_id'), nullable=False)
+    id_proc = Column(Integer, ForeignKey('Staff.staff_id'))
     reservation_time = Column(DateTime, nullable=False)
-    status = Column(Enum(ReservationStatus), nullable=False)
+    status = Column(Enum(ReservationStatus))
     proc_type = Column(String(255))
 
     customer = relationship("Customer", back_populates="reservations")
@@ -149,7 +149,6 @@ class Table(Base):
 
     restaurant = relationship('Restaurant', back_populates='tables')
     orders = relationship('Order', back_populates='table')
-
     reservations = relationship("Reservation", secondary="table_reservation", back_populates="tables")
 
 

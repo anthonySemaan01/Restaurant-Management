@@ -4,6 +4,7 @@ from domain.contracts.services.abstract_user_management import AbstractUserManag
 from sqlalchemy.orm import Session
 import persistence.sql_app.models as models
 from domain.models.review_restaurant_request import ReviewRestaurantRequest
+from domain.models.reserve_table_request import ReserveTableRequest
 from domain.models.user_sign_up_request import UserSignUpRequest
 from domain.exceptions.user_exception import UserSignUpException
 from domain.contracts.repositories.abstract_path_service import AbstractPathService
@@ -73,3 +74,12 @@ class UserManagement(AbstractUserManagement):
         db.commit()
         print(new_review.review_id)
         return new_review
+
+    def reserve_table(self, db: Session, reserve_table_request: ReserveTableRequest):
+        new_reservation = models.Reservation(table_id=reserve_table_request.table_id,
+                                             customer_id=reserve_table_request.customer_id,
+                                             reservation_time=reserve_table_request.time)
+        db.add(new_reservation)
+        db.commit()
+        print(new_reservation.reservation_id)
+        return new_reservation

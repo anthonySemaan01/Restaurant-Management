@@ -8,6 +8,7 @@ from domain.contracts.services.abstract_user_management import AbstractUserManag
 from dependency_injector.wiring import inject, Provide
 from domain.models.user_sign_in_request import UserSignInRequest
 from domain.models.review_restaurant_request import ReviewRestaurantRequest
+from domain.models.reserve_table_request import ReserveTableRequest
 
 router = APIRouter()
 
@@ -74,3 +75,11 @@ async def review_restaurant(review_restaurant_request: ReviewRestaurantRequest, 
                             user_management: AbstractUserManagement = Depends(
                                 Provide[Services.user_management])):
     return user_management.review_restaurant(db=db, review_restaurant_request=review_restaurant_request)
+
+
+@router.post("/reserve_table")
+@inject
+async def reserve_table(reserve_table_request: ReserveTableRequest, db: Session = Depends(get_db),
+                        user_management: AbstractUserManagement = Depends(
+                            Provide[Services.user_management])):
+    return user_management.reserve_table(db=db, reserve_table_request=reserve_table_request)

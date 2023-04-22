@@ -4,6 +4,7 @@ from domain.models.user_sign_up_request import UserSignUpRequest
 from fastapi import UploadFile
 from domain.models.user_sign_in_request import UserSignInRequest
 from domain.models.review_restaurant_request import ReviewRestaurantRequest
+from domain.models.reserve_table_request import ReserveTableRequest
 
 
 class AbstractUserManagement(ABC):
@@ -29,4 +30,8 @@ class AbstractUserManagement(ABC):
 
     @abstractmethod
     def review_restaurant(self, db: Session, review_restaurant_request: ReviewRestaurantRequest):
+        pass
+
+    @abstractmethod
+    def reserve_table(self, db: Session, reserve_table_request: ReserveTableRequest):
         pass

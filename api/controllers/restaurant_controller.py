@@ -62,3 +62,11 @@ async def add_dish_image(image: UploadFile, dish_id: DishUploadImage = Depends()
                          restaurant_management: AbstractRestaurantManagement = Depends(
                              Provide[Services.restaurant_management])):
     return restaurant_management.upload_dish_image(db=db, dish_id=dish_id.dish_id, image=image)
+
+
+@router.post("/get_date_time")
+@inject
+async def get_date_time(restaurant_id: int, db: Session = Depends(get_db),
+                        restaurant_management: AbstractRestaurantManagement = Depends(
+                            Provide[Services.restaurant_management])):
+    return restaurant_management.get_dates(restaurant_id=restaurant_id, db=db)

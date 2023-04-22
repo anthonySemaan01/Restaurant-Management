@@ -11,6 +11,7 @@ from shared.helpers.image_handler import load_image, save_image
 from domain.models.restaurant_images_parameters import IndividualImagesParameters, RestaurantImagesParameters
 from domain.models.add_dishes_request import AddDishesRequest
 import json
+import datetime
 
 
 class RestaurantManagement(AbstractRestaurantManagement):
@@ -134,3 +135,79 @@ class RestaurantManagement(AbstractRestaurantManagement):
         to_return = db.query(models.Dish).filter_by(dish_id=dish_id).first()
         to_return.picture = load_image(to_return.picture)
         return to_return
+
+    def get_dates(self, restaurant_id: int, db: Session):
+        # get all tables in a restaurant
+        tables = db.query(models.Table).filter_by(restaurant_id=restaurant_id).all()
+        table_ids_in_restaurant: list = []
+        for table in tables:
+            table_ids_in_restaurant.append(table.table_id)
+
+        print(table_ids_in_restaurant)
+        # Get the current date
+        today = datetime.date.today()
+        # Calculate the date of Monday in the current week
+        monday = today - datetime.timedelta(days=today.weekday())
+
+        # Create an empty dictionary to store the day numbers and their counts
+        day_counts = {}
+
+        for i in range(today.weekday()):
+            day = monday + datetime.timedelta(days=i)
+            day_counts[str(day.day)] = 0
+
+        # Set the count to 1 for today and the upcoming days of the week
+        for i in range(today.weekday(), 7):
+            day = monday + datetime.timedelta(days=i)
+            day_counts[str(day.day)] = 1
+
+        reservations = db.query(models.Reservation).filter(
+            models.Reservation.table_id.in_(table_ids_in_restaurant)).all()
+
+        reservations_on_tables: dict = {}
+        for table_id in table_ids_in_restaurant:
+            reservations_on_tables[table_id] = []
+
+        print(reservations_on_tables)
+        print(type(reservations_on_tables))
+        for reservation in reservations:
+            print(reservation.reservation_time, reservation.table_id)
+            if reservation.table_id in table_ids_in_restaurant:
+                reservations_on_tables[reservation.table_id].append(reservation.reservation_time)
+
+        print(reservations_on_tables)
+
+        # create a dictionary with the days that have a value of 1
+        days_with_1 = {k: v for k, v in day_counts.items() if v == 1}
+
+        # create a dictionary to store datetime objects for each day
+        datetime_dict = {}
+
+        # loop through each day with a value of 1 and create datetime objects for each hour from 9am to 11pm
+        # loop through each day with a value of 1 and create datetime objects for each hour from 9am to 11pm
+        for day in days_with_1:
+            datetime_list = []
+            for hour in range(9, 24):
+                dt = datetime.datetime(today.year, today.month, int(day), hour)
+                datetime_list.append({"time": dt, "available": 0})
+            datetime_dict[day] = datetime_list
+
+        print(datetime_dict)
+        for date, times in datetime_dict.items():
+            for time_availability in times:
+                time = time_availability["time"]
+                for table, reservations_on_table in reservations_on_tables.items():
+                    if time not in reservations_on_table:
+                        time_availability["available"] = 1
+
+        print(datetime_dict)
+
+        to_be_returned = {
+            "current_date": datetime.date.today(),
+            "current_week": day_counts,
+            "time": {
+                "current_time": datetime.datetime.now().time().strftime("%H:%M:%S"),
+                "available_times": datetime_dict,
+            }
+        }
+        return to_be_returned
