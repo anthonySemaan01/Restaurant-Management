@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from domain.models.add_restaurant_request import AddRestaurantRequest, AddRestaurantImagesRequest
 from domain.models.add_dishes_request import AddDishesRequest
 from typing import List
+import datetime
 
 
 class AbstractRestaurantManagement(ABC):
@@ -33,5 +34,9 @@ class AbstractRestaurantManagement(ABC):
         pass
 
     @abstractmethod
-    def get_dates(self, restaurant_id: int, db:Session):
+    def get_dates(self, restaurant_id: int, db: Session):
+        pass
+
+    @abstractmethod
+    def get_available_tables_at_time(self, db: Session, restaurant_id, date_time: datetime.datetime):
         pass

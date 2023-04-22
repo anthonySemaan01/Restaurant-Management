@@ -200,7 +200,9 @@ class RestaurantManagement(AbstractRestaurantManagement):
                     if time not in reservations_on_table:
                         time_availability["available"] = 1
 
-        print(datetime_dict)
+        for key, value in datetime_dict.items():
+            for i in range(len(value)):
+                value[i]['time'] = value[i]['time'].strftime("%I:%M %p")
 
         to_be_returned = {
             "current_date": datetime.date.today(),
@@ -211,3 +213,6 @@ class RestaurantManagement(AbstractRestaurantManagement):
             }
         }
         return to_be_returned
+
+    def get_available_tables_at_time(self, db: Session, restaurant_id, date_time: datetime.datetime):
+        pass
