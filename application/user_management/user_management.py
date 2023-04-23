@@ -105,7 +105,7 @@ class UserManagement(AbstractUserManagement):
             booking_to_append = {
                 "restaurant": restaurant,
                 "table_id": table_id,
-                "booking_date": booking_date.strftime('%m/%d/%Y - %H:%M'),
+                "booking_date": booking_date.strftime('%m/%d/%Y - %H:%M')
             }
 
             if booking_date < current_time:

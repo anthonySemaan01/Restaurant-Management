@@ -64,3 +64,11 @@ async def staff_upload_profile_image(image: UploadFile, staff_id: StaffUploadIma
         return ApiResponse(success=True, data=user)
     except Exception as e:
         return ApiResponse(success=False, error=e.__str__())
+
+
+@router.get("/get_bookings")
+@inject
+async def get_all_bookings(restaurant_id: int, db: Session = Depends(get_db),
+                           staff_management: AbstractStaffManagement = Depends(
+                               Provide[Services.staff_management])):
+    return staff_management.get_bookings(restaurant_id=restaurant_id, db=db)

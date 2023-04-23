@@ -25,3 +25,7 @@ class AbstractStaffManagement(ABC):
     @abstractmethod
     def upload_profile_image(self, db: Session, staff_id: int, image: UploadFile):
         pass
+
+    @abstractmethod
+    def get_bookings(self, db: Session, restaurant_id: int):
+        pass

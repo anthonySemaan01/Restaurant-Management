@@ -1,4 +1,5 @@
 import os
+import datetime
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 import persistence.sql_app.models as models
@@ -58,4 +59,31 @@ class StaffManagement(AbstractStaffManagement):
 
         to_return = db.query(models.Staff).filter_by(staff_id=staff_id).first()
         to_return.picture = load_image(to_return.picture)
+        return to_return
+
+    def get_bookings(self, db: Session, restaurant_id: int):
+        current_time = datetime.datetime.now()
+        to_return: dict = {
+            "passed_bookings": [],
+            "upcoming_bookings": []
+        }
+        tables = db.query(models.Table).filter_by(restaurant_id=restaurant_id).all()
+        tables_ids: list = [table.table_id for table in tables]
+        reservations = db.query(models.Reservation).filter(
+            models.Reservation.table_id.in_(tables_ids)).all()
+
+        for reservation in reservations:
+            customer = db.query(models.Customer).filter_by(customer_id=reservation.customer_id).first().__dict__
+            customer["picture"] = load_image(customer["picture"])
+            booking_to_append = {
+                "customer": customer,
+                "table_id": reservation.table_id,
+                "booking_date": reservation.reservation_time.strftime('%m/%d/%Y - %H:%M')
+            }
+
+            if reservation.reservation_time < current_time:
+                to_return["passed_bookings"].append(booking_to_append)
+            else:
+                to_return["upcoming_bookings"].append(booking_to_append)
+
         return to_return
