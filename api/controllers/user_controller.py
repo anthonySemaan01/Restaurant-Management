@@ -83,3 +83,11 @@ async def reserve_table(reserve_table_request: ReserveTableRequest, db: Session 
                         user_management: AbstractUserManagement = Depends(
                             Provide[Services.user_management])):
     return user_management.reserve_table(db=db, reserve_table_request=reserve_table_request)
+
+
+@router.get("/all_booking")
+@inject
+async def get_all_bookings(customer_id: int, db: Session = Depends(get_db),
+                           user_management: AbstractUserManagement = Depends(
+                               Provide[Services.user_management])):
+    return user_management.get_all_bookings(db=db, user_id=customer_id)

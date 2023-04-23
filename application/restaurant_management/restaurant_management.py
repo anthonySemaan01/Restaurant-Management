@@ -10,7 +10,7 @@ from domain.exceptions.restaurant_exception import AddRestaurantException
 from shared.helpers.image_handler import load_image, save_image
 from domain.models.restaurant_images_parameters import IndividualImagesParameters, RestaurantImagesParameters
 from domain.models.add_dishes_request import AddDishesRequest
-import json
+from shared.helpers.restaurant_review_calculation import get_restaurant_review_rate
 import datetime
 
 
@@ -21,20 +21,13 @@ class RestaurantManagement(AbstractRestaurantManagement):
 
     def get_all_restaurants(self, db: Session):
         restaurants = db.query(models.Restaurant).all()
-        restaurant_list = list(restaurants)
         avg_rating_list: list = []
         for restaurant in restaurants:
-            avg_rating = 0
             images_of_restaurant = []
             reviews = restaurant.reviews
-            for review in reviews:
-                avg_rating += int(review.rating)
-            if len(reviews) != 0:
-                avg_rating = avg_rating / len(reviews)
-
-            avg_rating_list.append(avg_rating)
-            for image in json.loads(restaurant.images):
-                images_of_restaurant.append(load_image(image["img_path"]))
+            avg_rating_list.append(get_restaurant_review_rate(restaurant))
+            for image_path in restaurant.images:
+                images_of_restaurant.append(load_image(image_path))
             restaurant.images = images_of_restaurant
 
         restaurants = list(restaurants)
@@ -48,8 +41,10 @@ class RestaurantManagement(AbstractRestaurantManagement):
         restaurant = db.query(models.Restaurant).filter_by(restaurant_id=restaurant_id).first()
         avg_rating = 0
         images_of_restaurant = []
-        for image in json.loads(restaurant.images):
-            images_of_restaurant.append(load_image(image["img_path"]))
+
+        for image_path in restaurant.images:
+            images_of_restaurant.append(load_image(image_path))
+
         restaurant.images = images_of_restaurant
         tables = restaurant.tables
         for review in restaurant.reviews:
@@ -75,7 +70,7 @@ class RestaurantManagement(AbstractRestaurantManagement):
                                                website=add_restaurant_request.website,
                                                social_media_pages=add_restaurant_request.social_media_pages,
                                                hours_of_operation=add_restaurant_request.hours_of_operation,
-                                               images=json.dumps([]))
+                                               images=[])
             db.add(new_restaurant)
             db.commit()
             staff = db.query(models.Staff).filter_by(staff_id=add_restaurant_request.staff_id).first()
@@ -92,7 +87,8 @@ class RestaurantManagement(AbstractRestaurantManagement):
 
     def add_images_restaurant(self, db: Session, restaurant_id: int,
                               images: List[UploadFile]):
-        images_list: List[IndividualImagesParameters] = []
+        # images_list: List[IndividualImagesParameters] = []
+        images_list: list = []
         for index, image in enumerate(images):
             if not os.path.exists(os.path.join(os.getcwd(), self.path_service.paths.restaurants_images_path,
                                                f"rest{restaurant_id}")):
@@ -105,12 +101,15 @@ class RestaurantManagement(AbstractRestaurantManagement):
             if os.path.exists(image_destination):
                 os.remove(image_destination)
             save_image(image, image_destination)
-            images_list.append(IndividualImagesParameters(img_id=index, img_path=image_destination))
+
+            images_list.append(image_destination)
         restaurant = db.query(models.Restaurant).filter_by(restaurant_id=restaurant_id).first()
-        restaurant.images = json.dumps([image.dict() for image in images_list])
+
+        restaurant.images = images_list
         db.commit()
         to_return = db.query(models.Restaurant).filter_by(restaurant_id=restaurant_id).first()
-        to_return.images = [load_image(x["img_path"]) for x in json.loads(to_return.images)]
+
+        to_return.images = [load_image(image_path) for image_path in to_return.images]
         return to_return
 
     def add_dishes(self, db: Session, add_dishes_request: AddDishesRequest):

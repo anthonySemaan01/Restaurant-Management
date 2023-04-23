@@ -1,6 +1,6 @@
 from enum import Enum as PyEnum
 
-from sqlalchemy import Column, ForeignKey, Integer, String, Enum, JSON, DateTime, Text, Numeric, LargeBinary
+from sqlalchemy import Column, ForeignKey, Integer, String, Enum, JSON, DateTime, Text, Numeric, LargeBinary, Date
 from sqlalchemy.orm import relationship
 
 from persistence.sql_app.database import Base
@@ -16,7 +16,7 @@ class Manager(Base):
     phone_nb = Column(String(255), nullable=False)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
-    date_of_birth = Column(DateTime, nullable=False)
+    date_of_birth = Column(Date, nullable=False)
     picture = Column(String(255))
 
     restaurant = relationship('Restaurant', back_populates='managers')
@@ -35,8 +35,7 @@ class Customer(Base):
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
     picture = Column(String(255))
-    date_of_birth = Column(DateTime, nullable=False)
-
+    date_of_birth = Column(Date, nullable=False)
     reservations = relationship('Reservation', back_populates='customer')
     reviews = relationship('Review', back_populates='customer')
 
@@ -74,7 +73,7 @@ class Staff(Base):
     phone_nb = Column(String(255), nullable=False)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
-    date_of_birth = Column(DateTime, nullable=False)
+    date_of_birth = Column(Date, nullable=False)
     picture = Column(String(255))
 
     restaurant = relationship('Restaurant', back_populates='staffs')

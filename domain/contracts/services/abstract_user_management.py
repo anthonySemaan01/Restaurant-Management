@@ -35,3 +35,7 @@ class AbstractUserManagement(ABC):
     @abstractmethod
     def reserve_table(self, db: Session, reserve_table_request: ReserveTableRequest):
         pass
+
+    @abstractmethod
+    def get_all_bookings(self, db: Session, user_id: int):
+        pass

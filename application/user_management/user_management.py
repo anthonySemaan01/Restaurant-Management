@@ -1,5 +1,5 @@
 import os
-
+import datetime
 from domain.contracts.services.abstract_user_management import AbstractUserManagement
 from sqlalchemy.orm import Session
 import persistence.sql_app.models as models
@@ -12,6 +12,7 @@ from fastapi import UploadFile, File
 from sqlalchemy import create_engine, Column, Integer, String
 from shared.helpers.image_handler import load_image, save_image
 from domain.models.user_sign_in_request import UserSignInRequest
+from shared.helpers.restaurant_review_calculation import get_restaurant_review_rate
 
 
 class UserManagement(AbstractUserManagement):
@@ -83,3 +84,33 @@ class UserManagement(AbstractUserManagement):
         db.commit()
         print(new_reservation.reservation_id)
         return new_reservation
+
+    def get_all_bookings(self, db: Session, user_id: int):
+        current_time = datetime.datetime.now()
+        to_return: dict = {
+            "passed_bookings": [],
+            "upcoming_bookings": []
+        }
+        bookings = db.query(models.Reservation).filter_by(customer_id=user_id).all()
+        for booking in bookings:
+            table_id = booking.table_id
+            booking_date = booking.reservation_time
+            restaurant = db.query(models.Table).filter_by(table_id=table_id).first().restaurant
+            restaurant_images = load_image(restaurant.images[0] if len(restaurant.images) > 0 else [])
+
+            review_rate = get_restaurant_review_rate(restaurant)
+            restaurant = restaurant.__dict__
+            restaurant["review_rate"] = review_rate
+            restaurant["images"] = restaurant_images
+            booking_to_append = {
+                "restaurant": restaurant,
+                "table_id": table_id,
+                "booking_date": booking_date.strftime('%m/%d/%Y - %H:%M'),
+            }
+
+            if booking_date < current_time:
+                to_return["passed_bookings"].append(booking_to_append)
+            else:
+                to_return["upcoming_bookings"].append(booking_to_append)
+
+        return to_return
