@@ -10,6 +10,14 @@ from dependency_injector.wiring import inject, Provide
 router = APIRouter()
 
 
+@router.get("/get_by_id")
+@inject
+async def get_manager_by_id(manager_id: int, db: Session = Depends(get_db),
+                            manager_management: AbstractManagerManagement = Depends(
+                                Provide[Services.manager_management])):
+    return manager_management.get_manager_by_id(manager_id=manager_id, db=db)
+
+
 @router.get("/all_managers")
 @inject
 async def get_all_managers(db: Session = Depends(get_db),

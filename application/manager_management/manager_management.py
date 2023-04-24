@@ -8,6 +8,9 @@ class ManagerManagement(AbstractManagerManagement):
     def __init__(self, path_service: AbstractPathService):
         self.path_service = path_service
 
+    def get_manager_by_id(self, manager_id: int, db: Session):
+        pass
+
     def get_all_managers(self, db: Session):
         pass
 
