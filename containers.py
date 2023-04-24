@@ -15,6 +15,9 @@ from application.restaurant_management.restaurant_management import RestaurantMa
 from domain.contracts.services.abstract_staff_management import AbstractStaffManagement
 from application.staff_management.staff_management import StaffManagement
 
+from domain.contracts.services.abstract_manager_management import AbstractManagerManagement
+from application.manager_management.manager_management import ManagerManagement
+
 
 class Services(containers.DeclarativeContainer):
     # services
@@ -29,3 +32,6 @@ class Services(containers.DeclarativeContainer):
 
     staff_management = providers.Singleton(AbstractStaffManagement.register(StaffManagement),
                                            path_service=paths_service)
+
+    manager_management = providers.Singleton(AbstractManagerManagement.register(ManagerManagement),
+                                             path_service=paths_service)

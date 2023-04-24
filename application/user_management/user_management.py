@@ -9,7 +9,7 @@ from domain.models.user_sign_up_request import UserSignUpRequest
 from domain.exceptions.user_exception import UserSignUpException
 from domain.contracts.repositories.abstract_path_service import AbstractPathService
 from fastapi import UploadFile, File
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import Integer
 from shared.helpers.image_handler import load_image, save_image
 from domain.models.user_sign_in_request import UserSignInRequest
 from shared.helpers.restaurant_review_calculation import get_restaurant_review_rate
