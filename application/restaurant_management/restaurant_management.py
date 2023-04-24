@@ -78,7 +78,7 @@ class RestaurantManagement(AbstractRestaurantManagement):
                                          password=staff.password, phone_nb=staff.phone_nb,
                                          first_name=staff.first_name, last_name=staff.last_name,
                                          date_of_birth=staff.date_of_birth, picture=staff.picture)
-            # db.delete(staff)
+            db.delete(staff)
             db.add(new_manager)
             db.commit()
         except Exception as e:

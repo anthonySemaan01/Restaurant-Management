@@ -1,8 +1,5 @@
-from enum import Enum as PyEnum
-
-from sqlalchemy import Column, ForeignKey, Integer, String, Enum, JSON, DateTime, Text, Numeric, LargeBinary, Date
+from sqlalchemy import Column, ForeignKey, Integer, String, JSON, DateTime, Text, Numeric, Date
 from sqlalchemy.orm import relationship
-
 from persistence.sql_app.database import Base
 
 
@@ -11,12 +8,12 @@ class Manager(Base):
 
     manager_id = Column(Integer, primary_key=True, autoincrement=True)
     restaurant_id = Column(Integer, ForeignKey('Restaurant.restaurant_id'), nullable=False)
-    email = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     phone_nb = Column(String(255), nullable=False)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
-    date_of_birth = Column(Date, nullable=False)
+    date_of_birth = Column(Date)
     picture = Column(String(255))
 
     restaurant = relationship('Restaurant', back_populates='managers')
@@ -29,13 +26,13 @@ class Customer(Base):
     __tablename__ = 'Customer'
 
     customer_id = Column(Integer, primary_key=True, autoincrement=True)
-    email = Column(String(255), nullable=False)
-    password = Column(String(255), nullable=False)
-    phone_nb = Column(String(20), nullable=False)
     first_name = Column(String(255), nullable=False)
     last_name = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False, unique=True)
+    password = Column(String(255), nullable=False)
+    phone_nb = Column(String(20), nullable=False)
     picture = Column(String(255))
-    date_of_birth = Column(Date, nullable=False)
+    date_of_birth = Column(Date)
     reservations = relationship('Reservation', back_populates='customer')
     reviews = relationship('Review', back_populates='customer')
 
@@ -68,7 +65,7 @@ class Staff(Base):
     staff_id = Column(Integer, primary_key=True, autoincrement=True)
     manager_id = Column(Integer, ForeignKey('Manager.manager_id'))
     restaurant_id = Column(Integer, ForeignKey('Restaurant.restaurant_id'))
-    email = Column(String(255), nullable=False)
+    email = Column(String(255), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     phone_nb = Column(String(255), nullable=False)
     first_name = Column(String(255), nullable=False)
@@ -87,14 +84,6 @@ class Order(Base):
 
     order_id = Column(Integer, primary_key=True, autoincrement=True)
     table_id = Column(Integer, ForeignKey('Table.table_id'), nullable=False)
-    id_init = Column(Integer, ForeignKey('Staff.staff_id'), nullable=False)
-    id_fin = Column(Integer, ForeignKey('Staff.staff_id'), nullable=False)
-    status = Column(Enum('In Progress', 'Completed', 'Canceled'), nullable=False)
-    time_init = Column(DateTime, nullable=False)
-    time_fin = Column(DateTime)
-    edits_made = Column(JSON)
-    proc_type = Column(String(255))
-    fin_type = Column(String(255))
 
     table = relationship('Table', back_populates='orders')
     staffs = relationship("Staff", secondary="staff_order", back_populates="orders")
@@ -108,7 +97,7 @@ class Dish(Base):
     dish_id = Column(Integer, primary_key=True, autoincrement=True)
     restaurant_id = Column(Integer, ForeignKey('Restaurant.restaurant_id'), nullable=False)
     name = Column(String(255), nullable=False)
-    description = Column(String(255), nullable=False)
+    description = Column(String(255))
     price = Column(Numeric(10, 2), nullable=False)
     picture = Column(String(255))
 
@@ -116,22 +105,12 @@ class Dish(Base):
     orders = relationship("Order", secondary="order_dish", back_populates="dishes")
 
 
-class ReservationStatus(PyEnum):
-    PENDING = 'Pending'
-    CONFIRMED = 'Confirmed'
-    CANCELED_BY_CUSTOMER = 'Canceled by Customer'
-    CANCELED_BY_RESTAURANT = 'Canceled by Restaurant'
-
-
 class Reservation(Base):
     __tablename__ = 'Reservation'
     reservation_id = Column(Integer, primary_key=True, autoincrement=True)
     table_id = Column(Integer, ForeignKey('Table.table_id'), nullable=False)
     customer_id = Column(Integer, ForeignKey('Customer.customer_id'), nullable=False)
-    id_proc = Column(Integer, ForeignKey('Staff.staff_id'))
     reservation_time = Column(DateTime, nullable=False)
-    status = Column(Enum(ReservationStatus))
-    proc_type = Column(String(255))
 
     customer = relationship("Customer", back_populates="reservations")
     staffs = relationship("Staff", secondary="staff_reservation", back_populates="reservations")
@@ -158,6 +137,8 @@ class Review(Base):
     customer_id = Column(Integer, ForeignKey('Customer.customer_id'), nullable=False)
     rating = Column(Integer, nullable=False)
     comment = Column(Text)
+    classes = Column(JSON)
+
     restaurant = relationship('Restaurant', back_populates='reviews')
     customer = relationship('Customer', back_populates='reviews')
 

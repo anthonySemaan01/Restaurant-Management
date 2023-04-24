@@ -28,12 +28,23 @@ class UserManagement(AbstractUserManagement):
 
     def user_sign_in(self, db: Session, user_sign_in_request: UserSignInRequest):
         customer = db.query(models.Customer).filter_by(email=user_sign_in_request.email).first()
-        print(customer)
+        staff = db.query(models.Staff).filter_by(email=user_sign_in_request.email).first()
+        manager = db.query(models.Manager).filter_by(email=user_sign_in_request.email).first()
+
         if customer is not None:
             if user_sign_in_request.password == customer.password:
-                return True, customer.customer_id
+                return True, "customer", customer.customer_id
 
-        return False, -1
+        elif staff is not None:
+            if user_sign_in_request.password == staff.password:
+                return True, "staff", staff.staff_id
+
+        elif manager is not None:
+            if user_sign_in_request.password == manager.password:
+                return True, "manager", manager.manager_id
+
+        else:
+            return False, "", -1
 
     def user_sign_up(self, db: Session, user_sign_up_request: UserSignUpRequest):
         try:
