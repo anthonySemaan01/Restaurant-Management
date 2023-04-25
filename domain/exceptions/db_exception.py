@@ -7,5 +7,3 @@ class DBException(ApplicationError):
 
     def __init__(self, additional_message: str):
         super().__init__(default_message="invalid access to db", additional_message=additional_message)
-
-

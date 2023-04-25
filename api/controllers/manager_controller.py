@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends
-from persistence.sql_app.db_dependency import get_db
-from sqlalchemy.orm import Session
-from containers import Services
-
-from domain.models.manager_requests import AssignManagerRequest, AssignStaffRequest
-from domain.contracts.services.abstract_manager_management import AbstractManagerManagement
 from dependency_injector.wiring import inject, Provide
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+
+from containers import Services
+from domain.contracts.services.abstract_manager_management import AbstractManagerManagement
+from domain.models.manager_requests import AssignManagerRequest, AssignStaffRequest
+from persistence.sql_app.db_dependency import get_db
 
 router = APIRouter()
 

@@ -1,5 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, JSON, DateTime, Text, Numeric, Date
 from sqlalchemy.orm import relationship
+
 from persistence.sql_app.database import Base
 
 

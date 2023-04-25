@@ -1,9 +1,12 @@
 import openai
-import os
+
 import data.credentials as credentials
 
+# if you are trying to run the api, simple comment the below line and put your own openai api key
 openai.api_key = credentials.gpt_api_key
 
+
+# openai.api_key = <<your_api_key>>
 
 def start_inference(review_comment: str):
     potential_answers = ["positive", "negative", "neutral"]

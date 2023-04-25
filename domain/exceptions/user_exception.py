@@ -15,6 +15,3 @@ class UserSignInException(ApplicationError):
 
     def __init__(self, additional_message: str):
         super().__init__(default_message="An Error Occurred While SignIn", additional_message=additional_message)
-
-
-

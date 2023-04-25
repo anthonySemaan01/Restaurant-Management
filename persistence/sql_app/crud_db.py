@@ -11,12 +11,11 @@ def get_restaurant_by_name(db: Session, name: str):
 
 
 def get_all_restaurants(db: Session, skip: int = 0,
-                     limit: int = 100) -> list:  # Always set return type and use from typing import List, Dict, Optional so you can specify for example List[int] or List[PointCloud]
+                        limit: int = 100) -> list:  # Always set return type and use from typing import List, Dict, Optional so you can specify for example List[int] or List[PointCloud]
     try:
         return db.query(models.Restaurant).offset(skip).limit(limit).all()
     except Exception as e:
         raise DBException(additional_message=e.__str__())
-
 
 # def create_point_cloud(db: Session, point_count: int, path: str) -> \
 #         ocr_api.persistence.sqlite_db.point_cloud_model.PointCloud:  # Just import it and only use PointCloud

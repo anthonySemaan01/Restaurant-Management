@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
+
+from fastapi import UploadFile
 from sqlalchemy.orm import Session
-from domain.models.staff_sign_up_request import StaffSignUpRequest
-from fastapi import UploadFile, File
+
 from domain.models.staff_sign_in_request import StaffSignInRequest
+from domain.models.staff_sign_up_request import StaffSignUpRequest
 
 
 class AbstractStaffManagement(ABC):

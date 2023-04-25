@@ -1,12 +1,13 @@
-from fastapi import APIRouter, UploadFile, File, Depends
-from persistence.sql_app.db_dependency import get_db
+from dependency_injector.wiring import inject, Provide
+from fastapi import APIRouter, UploadFile, Depends
 from sqlalchemy.orm import Session
+
 from containers import Services
+from domain.contracts.services.abstract_staff_management import AbstractStaffManagement
 from domain.models.staff_sign_in_request import StaffSignInRequest
 from domain.models.staff_sign_up_request import StaffSignUpRequest, StaffUploadImage
-from domain.contracts.services.abstract_staff_management import AbstractStaffManagement
 from persistence.repositories.api_response import ApiResponse
-from dependency_injector.wiring import inject, Provide
+from persistence.sql_app.db_dependency import get_db
 
 router = APIRouter()
 

@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
+
 from sqlalchemy.orm import Session
+
 from domain.models.manager_requests import AssignManagerRequest, AssignStaffRequest
 
 

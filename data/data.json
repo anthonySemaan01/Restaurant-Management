@@ -1,0 +1,201 @@
+{
+  "staff": [
+    {
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "johndoe@example.com",
+      "password": "mysecretpassword",
+      "phone_nb": "555-1234",
+      "date_of_birth": "1990-01-01"
+    },
+    {
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "email": "janesmith@example.com",
+      "password": "mypassword123",
+      "phone_nb": "555-5678",
+      "date_of_birth": "1985-05-10"
+    },
+    {
+      "first_name": "Bob",
+      "last_name": "Johnson",
+      "email": "bjohnson@example.com",
+      "password": "password1234",
+      "phone_nb": "555-4321",
+      "date_of_birth": "1978-11-25"
+    },
+    {
+      "first_name": "Emily",
+      "last_name": "Brown",
+      "email": "emilybrown@example.com",
+      "password": "mysecretpass",
+      "phone_nb": "555-8765",
+      "date_of_birth": "1995-03-15"
+    },
+    {
+      "first_name": "David",
+      "last_name": "Lee",
+      "email": "davidlee@example.com",
+      "password": "mypassword",
+      "phone_nb": "555-9876",
+      "date_of_birth": "1980-07-22"
+    },
+    {
+      "first_name": "Samantha",
+      "last_name": "Williams",
+      "email": "samwilliams@example.com",
+      "password": "password123",
+      "phone_nb": "555-1111",
+      "date_of_birth": "1992-08-12"
+    },
+    {
+      "first_name": "Michael",
+      "last_name": "Davis",
+      "email": "mdavis@example.com",
+      "password": "mysecretpassword",
+      "phone_nb": "555-2222",
+      "date_of_birth": "1987-02-18"
+    },
+    {
+      "first_name": "Maria",
+      "last_name": "Garcia",
+      "email": "mariagarcia@example.com",
+      "password": "password456",
+      "phone_nb": "555-3333",
+      "date_of_birth": "1999-12-05"
+    },
+    {
+      "first_name": "Jonathan",
+      "last_name": "Lopez",
+      "email": "jlopez@example.com",
+      "password": "mypassword321",
+      "phone_nb": "555-4444",
+      "date_of_birth": "1983-04-28"
+    },
+    {
+      "first_name": "Ava",
+      "last_name": "Miller",
+      "email": "avamiller@example.com",
+      "password": "mysecretpassword",
+      "phone_nb": "555-5555",
+      "date_of_birth": "2001-01-10"
+    }
+  ],
+  "customers": [
+    {
+      "first_name": "Alex",
+      "last_name": "Turner",
+      "email": "alexturner@example.com",
+      "password": "mysecretpassword",
+      "phone_nb": "555-7777",
+      "date_of_birth": "1996-09-04"
+    },
+    {
+      "first_name": "Olivia",
+      "last_name": "Jones",
+      "email": "oliviajones@example.com",
+      "password": "mypassword123",
+      "phone_nb": "555-8888",
+      "date_of_birth": "1994-06-15"
+    },
+    {
+      "first_name": "Isabella",
+      "last_name": "Gonzalez",
+      "email": "isabellagonzalez@example.com",
+      "password": "mysecretpass",
+      "phone_nb": "555-2222",
+      "date_of_birth": "2000-04-01"
+    },
+    {
+      "first_name": "Christopher",
+      "last_name": "Brown",
+      "email": "chrisbrown@example.com",
+      "password": "mypassword",
+      "phone_nb": "555-3333",
+      "date_of_birth": "1991-02-14"
+    }
+  ],
+  "Restaurants": [
+    {
+      "name": "Café de Paris",
+      "address": "123 Main Street, Anytown, USA",
+      "phone_number": "555-1234",
+      "cuisine": [
+        "French",
+        "European"
+      ],
+      "website": "https://www.cafedeparis.com",
+      "social_media_pages": {
+        "facebook": "https://www.facebook.com/cafede.paris",
+        "instagram": "https://www.instagram.com/cafede_paris/"
+      },
+      "hours_of_operation": "Mon-Sat 8am-10pm, Sun 8am-9pm",
+      "staff_id": 1
+    },
+    {
+      "name": "Taco Joint",
+      "address": "456 Elm Street, Anytown, USA",
+      "phone_number": "555-5678",
+      "cuisine": [
+        "Mexican",
+        "Tex-Mex"
+      ],
+      "website": "https://www.tacojoint.com",
+      "social_media_pages": {
+        "facebook": "https://www.facebook.com/tacojoint",
+        "twitter": "https://twitter.com/taco_joint"
+      },
+      "hours_of_operation": "Mon-Sat 11am-9pm, Sun 11am-8pm",
+      "staff_id": 2
+    },
+    {
+      "name": "Sushi Palace",
+      "address": "789 Oak Street, Anytown, USA",
+      "phone_number": "555-6789",
+      "cuisine": [
+        "Japanese",
+        "Sushi",
+        "Seafood"
+      ],
+      "website": "https://www.sushipalace.com",
+      "social_media_pages": {
+        "instagram": "https://www.instagram.com/sushi_palace/",
+        "yelp": "https://www.yelp.com/biz/sushi-palace-anytown"
+      },
+      "hours_of_operation": "Mon-Sat 12pm-10pm, Sun 12pm-9pm",
+      "staff_id": 3
+    },
+    {
+      "name": "Pizza Paradise",
+      "address": "321 Maple Street, Anytown, USA",
+      "phone_number": "555-7890",
+      "cuisine": [
+        "Italian",
+        "Pizza"
+      ],
+      "website": "https://www.pizzaparadise.com",
+      "social_media_pages": {
+        "facebook": "https://www.facebook.com/pizzaparadise",
+        "twitter": "https://twitter.com/pizzaparadise"
+      },
+      "hours_of_operation": "Mon-Sun 11am-11pm",
+      "staff_id": 4
+    },
+    {
+      "name": "Burger Bistro",
+      "address": "987 Pine Street, Anytown, USA",
+      "phone_number": "555-8901",
+      "cuisine": [
+        "American",
+        "Burgers"
+      ],
+      "website": "https://www.burgerbistro.com",
+      "social_media_pages": {
+        "instagram": "https://www.instagram.com/burger_bistro/",
+        "yelp": "https://www.yelp.com/biz/burger-bistro-anytown"
+      },
+      "hours_of_operation": "Mon-Sun 11am-9pm",
+      "staff_id": 5
+    }
+  ]
+}

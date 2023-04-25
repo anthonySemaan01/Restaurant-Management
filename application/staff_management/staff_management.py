@@ -1,14 +1,16 @@
-import os
 import datetime
+import os
+
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
+
 import persistence.sql_app.models as models
-from domain.contracts.services.abstract_staff_management import AbstractStaffManagement
 from domain.contracts.repositories.abstract_path_service import AbstractPathService
-from domain.models.staff_sign_up_request import StaffSignUpRequest
-from domain.exceptions.staff_exception import StaffSignInException, StaffSignUpException
-from shared.helpers.image_handler import load_image, save_image
+from domain.contracts.services.abstract_staff_management import AbstractStaffManagement
+from domain.exceptions.staff_exception import StaffSignUpException
 from domain.models.staff_sign_in_request import StaffSignInRequest
+from domain.models.staff_sign_up_request import StaffSignUpRequest
+from shared.helpers.image_handler import load_image, save_image
 
 
 class StaffManagement(AbstractStaffManagement):
@@ -40,7 +42,8 @@ class StaffManagement(AbstractStaffManagement):
                                      phone_nb=staff_sign_up_request.password,
                                      first_name=staff_sign_up_request.first_name,
                                      last_name=staff_sign_up_request.last_name,
-                                     date_of_birth=staff_sign_up_request.date_of_birth)
+                                     date_of_birth=staff_sign_up_request.date_of_birth,
+                                     picture="")
             db.add(new_staff)
             db.commit()
         except Exception as e:

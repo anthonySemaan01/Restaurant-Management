@@ -1,13 +1,15 @@
-from domain.contracts.services.abstract_table_detection import AbstractTableDetection
-from sqlalchemy.orm import Session
-from core.model.model_configuation import get_yolov5
-from core.images.image_processor import get_image_from_bytes
-from starlette.responses import Response
-import json
-from fastapi import File
-from PIL import Image
 import io
+import json
+
+from PIL import Image
+from fastapi import File
+from sqlalchemy.orm import Session
+from starlette.responses import Response
+
 import persistence.sql_app.models as models
+from core.images.image_processor import get_image_from_bytes
+from core.model.model_configuation import get_yolov5
+from domain.contracts.services.abstract_table_detection import AbstractTableDetection
 from persistence.services.path_service import AbstractPathService
 
 model = get_yolov5()

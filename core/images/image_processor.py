@@ -1,6 +1,6 @@
-import torch
-from PIL import Image
 import io
+
+from PIL import Image
 
 
 def get_image_from_bytes(binary_image, max_size=1024):
@@ -14,4 +14,3 @@ def get_image_from_bytes(binary_image, max_size=1024):
         )
     )
     return resized_image, resized_image.width, resized_image.height
-

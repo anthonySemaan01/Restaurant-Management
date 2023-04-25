@@ -1,17 +1,20 @@
-import os
 import datetime
-from domain.contracts.services.abstract_user_management import AbstractUserManagement
-from sqlalchemy.orm import Session
-import persistence.sql_app.models as models
-from domain.models.review_restaurant_request import ReviewRestaurantRequest
-from domain.models.reserve_table_request import ReserveTableRequest
-from domain.models.user_sign_up_request import UserSignUpRequest
-from domain.exceptions.user_exception import UserSignUpException
-from domain.contracts.repositories.abstract_path_service import AbstractPathService
-from fastapi import UploadFile, File
+import os
+
+from fastapi import UploadFile
 from sqlalchemy import Integer
-from shared.helpers.image_handler import load_image, save_image
+from sqlalchemy.orm import Session
+
+import persistence.sql_app.models as models
+from core.nlp.nlp import start_inference
+from domain.contracts.repositories.abstract_path_service import AbstractPathService
+from domain.contracts.services.abstract_user_management import AbstractUserManagement
+from domain.exceptions.user_exception import UserSignUpException
+from domain.models.reserve_table_request import ReserveTableRequest
+from domain.models.review_restaurant_request import ReviewRestaurantRequest
 from domain.models.user_sign_in_request import UserSignInRequest
+from domain.models.user_sign_up_request import UserSignUpRequest
+from shared.helpers.image_handler import load_image, save_image
 from shared.helpers.restaurant_review_calculation import get_restaurant_review_rate
 
 
@@ -49,10 +52,11 @@ class UserManagement(AbstractUserManagement):
     def user_sign_up(self, db: Session, user_sign_up_request: UserSignUpRequest):
         try:
             new_customer = models.Customer(email=user_sign_up_request.email, password=user_sign_up_request.password,
-                                           phone_nb=user_sign_up_request.password,
+                                           phone_nb=user_sign_up_request.phone_nb,
                                            first_name=user_sign_up_request.first_name,
                                            last_name=user_sign_up_request.last_name,
-                                           date_of_birth=user_sign_up_request.date_of_birth)
+                                           date_of_birth=user_sign_up_request.date_of_birth,
+                                           picture="")
             db.add(new_customer)
             db.commit()
         except Exception as e:
@@ -79,13 +83,15 @@ class UserManagement(AbstractUserManagement):
         return data
 
     def review_restaurant(self, db: Session, review_restaurant_request: ReviewRestaurantRequest):
+        classes_inferred = start_inference(review_comment=review_restaurant_request.comment)
         new_review = models.Review(restaurant_id=review_restaurant_request.restaurant_id,
                                    customer_id=review_restaurant_request.customer_id,
-                                   rating=review_restaurant_request.rating, comment=review_restaurant_request.comment)
+                                   rating=review_restaurant_request.rating, comment=review_restaurant_request.comment,
+                                   classes=classes_inferred)
         db.add(new_review)
         db.commit()
         print(new_review.review_id)
-        return new_review
+        return db.query(models.Review).filter_by(restaurant_id=review_restaurant_request.restaurant_id).all()
 
     def reserve_table(self, db: Session, reserve_table_request: ReserveTableRequest):
         new_reservation = models.Reservation(table_id=reserve_table_request.table_id,

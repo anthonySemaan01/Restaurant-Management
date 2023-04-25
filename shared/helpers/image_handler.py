@@ -1,7 +1,8 @@
-import os
 import base64
-from fastapi import UploadFile
+import os
 import shutil
+
+from fastapi import UploadFile
 
 
 def load_image(path: str):

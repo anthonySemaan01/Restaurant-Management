@@ -1,17 +1,18 @@
+import datetime
 import os
 from typing import List
-from domain.contracts.services.abstract_restaurant_management import AbstractRestaurantManagement
+
+from fastapi import UploadFile
 from sqlalchemy.orm import Session
+
 import persistence.sql_app.models as models
-from domain.models.add_restaurant_request import AddRestaurantRequest
 from domain.contracts.repositories.abstract_path_service import AbstractPathService
-from fastapi import UploadFile, File
+from domain.contracts.services.abstract_restaurant_management import AbstractRestaurantManagement
 from domain.exceptions.restaurant_exception import AddRestaurantException
-from shared.helpers.image_handler import load_image, save_image
-from domain.models.restaurant_images_parameters import IndividualImagesParameters, RestaurantImagesParameters
 from domain.models.add_dishes_request import AddDishesRequest
+from domain.models.add_restaurant_request import AddRestaurantRequest
+from shared.helpers.image_handler import load_image, save_image
 from shared.helpers.restaurant_review_calculation import get_restaurant_review_rate
-import datetime
 
 
 class RestaurantManagement(AbstractRestaurantManagement):
@@ -26,8 +27,8 @@ class RestaurantManagement(AbstractRestaurantManagement):
             images_of_restaurant = []
             reviews = restaurant.reviews
             avg_rating_list.append(get_restaurant_review_rate(restaurant))
-            for image_path in restaurant.images:
-                images_of_restaurant.append(load_image(image_path))
+            if len(restaurant.images) > 0:
+                images_of_restaurant.append(load_image(restaurant.images[0]))
             restaurant.images = images_of_restaurant
 
         restaurants = list(restaurants)

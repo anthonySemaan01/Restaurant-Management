@@ -1,12 +1,12 @@
-from fastapi import APIRouter, UploadFile, File, Depends
-from containers import Services
-from persistence.sql_app.db_dependency import get_db
-from sqlalchemy.orm import Session
-from persistence.repositories.api_response import ApiResponse
-from domain.contracts.services.abstract_table_detection import AbstractTableDetection
 from dependency_injector.wiring import inject, Provide
+from fastapi import APIRouter, File, Depends
+from sqlalchemy.orm import Session
+
+from containers import Services
+from domain.contracts.services.abstract_table_detection import AbstractTableDetection
 from domain.models.add_restaurant_request import AddRestaurantImagesRequest
-from typing import Optional
+from persistence.repositories.api_response import ApiResponse
+from persistence.sql_app.db_dependency import get_db
 
 router = APIRouter()
 

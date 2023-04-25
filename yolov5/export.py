@@ -91,7 +91,7 @@ def export_formats():
         ['TensorFlow Lite', 'tflite', '.tflite', True, False],
         ['TensorFlow Edge TPU', 'edgetpu', '_edgetpu.tflite', False, False],
         ['TensorFlow.js', 'tfjs', '_web_model', False, False],
-        ['PaddlePaddle', 'paddle', '_paddle_model', True, True],]
+        ['PaddlePaddle', 'paddle', '_paddle_model', True, True], ]
     return pd.DataFrame(x, columns=['Format', 'Argument', 'Suffix', 'CPU', 'GPU'])
 
 
@@ -201,7 +201,7 @@ def export_openvino(file, metadata, half, prefix=colorstr('OpenVINO:')):
         '--output_dir',
         f,
         '--data_type',
-        ('FP16' if half else 'FP32'),]
+        ('FP16' if half else 'FP32'), ]
     subprocess.run(args, check=True, env=os.environ)  # export
     yaml_save(Path(f) / file.with_suffix('.yaml').name, metadata)  # add metadata.yaml
     return f, None
@@ -435,7 +435,7 @@ def export_edgetpu(file, prefix=colorstr('Edge TPU:')):
         '10',
         '--out_dir',
         str(file.parent),
-        f_tfl,], check=True)
+        f_tfl, ], check=True)
     return f, None
 
 
@@ -456,7 +456,7 @@ def export_tfjs(file, int8, prefix=colorstr('TensorFlow.js:')):
         '--quantize_uint8' if int8 else '',
         '--output_node_names=Identity,Identity_1,Identity_2,Identity_3',
         str(f_pb),
-        str(f),]
+        str(f), ]
     subprocess.run([arg for arg in args if arg], check=True)
 
     json = Path(f_json).read_text()
@@ -466,9 +466,9 @@ def export_tfjs(file, int8, prefix=colorstr('TensorFlow.js:')):
             r'"Identity.?.?": {"name": "Identity.?.?"}, '
             r'"Identity.?.?": {"name": "Identity.?.?"}, '
             r'"Identity.?.?": {"name": "Identity.?.?"}}}', r'{"outputs": {"Identity": {"name": "Identity"}, '
-            r'"Identity_1": {"name": "Identity_1"}, '
-            r'"Identity_2": {"name": "Identity_2"}, '
-            r'"Identity_3": {"name": "Identity_3"}}}', json)
+                                                           r'"Identity_1": {"name": "Identity_1"}, '
+                                                           r'"Identity_2": {"name": "Identity_2"}, '
+                                                           r'"Identity_3": {"name": "Identity_3"}}}', json)
         j.write(subst)
     return f, None
 
