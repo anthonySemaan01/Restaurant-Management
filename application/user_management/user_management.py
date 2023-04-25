@@ -83,7 +83,8 @@ class UserManagement(AbstractUserManagement):
         return data
 
     def review_restaurant(self, db: Session, review_restaurant_request: ReviewRestaurantRequest):
-        classes_inferred = start_inference(review_comment=review_restaurant_request.comment)
+        classes_inferred: dict = start_inference(review_comment=review_restaurant_request.comment)
+
         new_review = models.Review(restaurant_id=review_restaurant_request.restaurant_id,
                                    customer_id=review_restaurant_request.customer_id,
                                    rating=review_restaurant_request.rating, comment=review_restaurant_request.comment,

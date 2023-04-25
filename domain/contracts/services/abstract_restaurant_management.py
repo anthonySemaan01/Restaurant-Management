@@ -42,3 +42,7 @@ class AbstractRestaurantManagement(ABC):
     @abstractmethod
     def get_available_tables_at_time(self, db: Session, restaurant_id, date_time: datetime.datetime):
         pass
+
+    @abstractmethod
+    def get_review(self, db: Session, restaurant_id: int):
+        pass

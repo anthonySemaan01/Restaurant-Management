@@ -48,12 +48,7 @@ class RestaurantManagement(AbstractRestaurantManagement):
 
         restaurant.images = images_of_restaurant
         tables = restaurant.tables
-        for review in restaurant.reviews:
-            customer_review = review.customer.first_name
-
-            avg_rating += int(review.rating)
-        if len(restaurant.reviews) != 0:
-            avg_rating = avg_rating / len(restaurant.reviews)
+        avg_rating = get_restaurant_review_rate(restaurant)
         for dish in restaurant.dishes:
             if dish.picture is not None:
                 dish.picture = load_image(dish.picture)
@@ -219,3 +214,7 @@ class RestaurantManagement(AbstractRestaurantManagement):
                 to_be_returned[reservation.table_id] = 0
 
         return to_be_returned
+
+    def get_review(self, db: Session, restaurant_id: int):
+        reviews = db.query(models.Review).filter_by(restaurant_id=restaurant_id).all()
+        return reviews

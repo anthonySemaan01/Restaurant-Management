@@ -1,3 +1,5 @@
+import json
+
 import openai
 
 import data.credentials as credentials
@@ -8,7 +10,7 @@ openai.api_key = credentials.gpt_api_key
 
 # openai.api_key = <<your_api_key>>
 
-def start_inference(review_comment: str):
+def start_inference(review_comment: str) -> dict:
     potential_answers = ["positive", "negative", "neutral"]
     entries = ["food", "service", "location", "price", "ambiance"]
 
@@ -25,4 +27,4 @@ def start_inference(review_comment: str):
         ]
     )
 
-    return response['choices'][0]['message']['content']
+    return json.loads(response['choices'][0]['message']['content'])

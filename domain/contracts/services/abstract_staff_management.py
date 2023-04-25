@@ -31,3 +31,4 @@ class AbstractStaffManagement(ABC):
     @abstractmethod
     def get_bookings(self, db: Session, restaurant_id: int):
         pass
+

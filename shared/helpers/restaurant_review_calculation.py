@@ -7,5 +7,5 @@ def get_restaurant_review_rate(restaurant: Restaurant):
     for review in reviews:
         avg_rating += int(review.rating)
     if len(reviews) != 0:
-        avg_rating = avg_rating / len(reviews)
+        avg_rating = round(avg_rating / len(reviews), 1)
     return avg_rating

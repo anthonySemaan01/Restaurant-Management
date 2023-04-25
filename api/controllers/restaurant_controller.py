@@ -82,3 +82,12 @@ async def get_available_tables(restaurant_id: int,
                                restaurant_management: AbstractRestaurantManagement = Depends(
                                    Provide[Services.restaurant_management])):
     return restaurant_management.get_available_tables_at_time(restaurant_id=restaurant_id, date_time=date_time, db=db)
+
+
+@router.get("/get_review")
+@inject
+async def get_reviews(restaurant_id: int,
+                      db: Session = Depends(get_db),
+                      restaurant_management: AbstractRestaurantManagement = Depends(
+                          Provide[Services.restaurant_management])):
+    return restaurant_management.get_review(restaurant_id=restaurant_id, db=db)
