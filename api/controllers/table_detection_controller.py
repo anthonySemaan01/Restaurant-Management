@@ -1,5 +1,5 @@
 from dependency_injector.wiring import inject, Provide
-from fastapi import APIRouter, File, Depends
+from fastapi import APIRouter, Depends, UploadFile
 from sqlalchemy.orm import Session
 
 from containers import Services
@@ -13,8 +13,8 @@ router = APIRouter()
 
 @router.post("/image-to-json")
 @inject
-async def detect_tables_return_json(add_restaurant_request: AddRestaurantImagesRequest = Depends(),
-                                    db: Session = Depends(get_db), image: bytes = File(...),
+async def detect_tables_return_json(image: UploadFile, add_restaurant_request: AddRestaurantImagesRequest = Depends(),
+                                    db: Session = Depends(get_db),
                                     table_detection: AbstractTableDetection = Depends(
                                         Provide[Services.table_detection])):
     return ApiResponse(success=True,
@@ -25,6 +25,6 @@ async def detect_tables_return_json(add_restaurant_request: AddRestaurantImagesR
 
 @router.post("/image-to-image")
 @inject
-async def detect_tables_return_image(image: bytes = File(...), table_detection: AbstractTableDetection = Depends(
+async def detect_tables_return_image(image: UploadFile, table_detection: AbstractTableDetection = Depends(
     Provide[Services.table_detection])):
     return table_detection.detect_tables_return_image(image)

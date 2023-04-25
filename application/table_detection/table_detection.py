@@ -2,7 +2,7 @@ import io
 import json
 
 from PIL import Image
-from fastapi import File
+from fastapi import File, UploadFile
 from sqlalchemy.orm import Session
 from starlette.responses import Response
 
@@ -19,7 +19,7 @@ class TableDetection(AbstractTableDetection):
     def __init__(self, path_service: AbstractPathService):
         self.path_service = path_service
 
-    def detect_tables_return_json(self, db: Session, restaurant_id: int = None, image: bytes = File(...)):
+    def detect_tables_return_json(self, image: UploadFile, db: Session, restaurant_id: int = None):
         input_image, input_image_width, input_image_height = get_image_from_bytes(image)
         results = model(input_image)
         detect_res = results.pandas().xyxy[0].to_json(orient="records")
@@ -36,8 +36,8 @@ class TableDetection(AbstractTableDetection):
         db.commit()
         return detect_res
 
-    def detect_tables_return_image(self, image: bytes = File(...)):
-        input_image, width, height = get_image_from_bytes(image)
+    def detect_tables_return_image(self, image: UploadFile):
+        input_image, input_image_width, input_image_height = get_image_from_bytes(image)
         results = model(input_image)
         results.render()
         for img in results.ims:
