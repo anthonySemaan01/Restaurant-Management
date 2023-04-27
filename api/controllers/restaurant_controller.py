@@ -91,3 +91,12 @@ async def get_reviews(restaurant_id: int,
                       restaurant_management: AbstractRestaurantManagement = Depends(
                           Provide[Services.restaurant_management])):
     return restaurant_management.get_review(restaurant_id=restaurant_id, db=db)
+
+
+@router.get("/get_by_name")
+@inject
+async def get_reviews(restaurant_name: str,
+                      db: Session = Depends(get_db),
+                      restaurant_management: AbstractRestaurantManagement = Depends(
+                          Provide[Services.restaurant_management])):
+    return restaurant_management.get_restaurant_by_name(db=db, restaurant_name=restaurant_name)

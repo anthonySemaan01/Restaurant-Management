@@ -39,7 +39,7 @@ class StaffManagement(AbstractStaffManagement):
     def staff_sign_up(self, db: Session, staff_sign_up_request: StaffSignUpRequest):
         try:
             new_staff = models.Staff(email=staff_sign_up_request.email, password=staff_sign_up_request.password,
-                                     phone_nb=staff_sign_up_request.password,
+                                     phone_nb=staff_sign_up_request.phone_nb,
                                      first_name=staff_sign_up_request.first_name,
                                      last_name=staff_sign_up_request.last_name,
                                      date_of_birth=staff_sign_up_request.date_of_birth,

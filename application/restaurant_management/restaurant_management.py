@@ -217,4 +217,27 @@ class RestaurantManagement(AbstractRestaurantManagement):
 
     def get_review(self, db: Session, restaurant_id: int):
         reviews = db.query(models.Review).filter_by(restaurant_id=restaurant_id).all()
+        for review in reviews:
+            customer = review.customer
         return reviews
+
+    def get_restaurant_by_name(self, db: Session, restaurant_name: str):
+        restaurants = db.query(models.Restaurant).all()
+        avg_rating_list = []
+        matches = []
+        for restaurant in restaurants:
+            if restaurant_name in restaurant.name:
+                images_of_restaurant = []
+                reviews = restaurant.reviews
+                avg_rating_list.append(get_restaurant_review_rate(restaurant))
+                if len(restaurant.images) > 0:
+                    images_of_restaurant.append(load_image(restaurant.images[0]))
+                restaurant.images = images_of_restaurant
+
+                matches.append(restaurant)
+
+        for index, restaurant in enumerate(matches):
+            restaurant = restaurant.__dict__
+            restaurant["avg_rating"] = avg_rating_list[index]
+        return matches
+
