@@ -50,3 +50,11 @@ class AbstractRestaurantManagement(ABC):
     @abstractmethod
     def get_restaurant_by_name(self, db: Session, restaurant_name: str):
         pass
+
+    @abstractmethod
+    def get_restaurant_by_staff_id(self, db: Session, staff_id: int):
+        pass
+
+    @abstractmethod
+    def get_restaurant_by_manager_id(self, db: Session, manager_id: int):
+        pass

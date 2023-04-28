@@ -205,17 +205,21 @@ class RestaurantManagement(AbstractRestaurantManagement):
         return to_be_returned
 
     def get_available_tables_at_time(self, db: Session, restaurant_id, date_time: datetime.datetime):
+        # to_be_returned[reservation.table_id] = 0
         tables = db.query(models.Table).filter_by(restaurant_id=restaurant_id).all()
-        tables_ids: list = [table.table_id for table in tables]
-        reservations = db.query(models.Reservation).filter(
-            models.Reservation.table_id.in_(tables_ids)).all()
-        to_be_returned: dict = {}
-        for table_id in tables_ids:
-            to_be_returned[table_id] = 1
-        for reservation in reservations:
-            if reservation.reservation_time == date_time:
-                to_be_returned[reservation.table_id] = 0
+        for table in tables:
+            reservations = db.query(models.Reservation).filter_by(table_id=table.table_id).all()
+            table = table.__dict__
+            table["available"] = 1
+            for reservation in reservations:
+                if reservation.reservation_time == date_time:
+                    table["available"] = 0
+        dimensions = db.query(models.Restaurant).filter_by(restaurant_id=restaurant_id).first().dimensions
 
+        to_be_returned = {
+            "dimensions": dimensions,
+            "tables": tables
+        }
         return to_be_returned
 
     def get_review(self, db: Session, restaurant_id: int):
@@ -244,3 +248,54 @@ class RestaurantManagement(AbstractRestaurantManagement):
             restaurant["avg_rating"] = avg_rating_list[index]
         return matches
 
+    def get_restaurant_by_staff_id(self, db: Session, staff_id: int):
+        restaurant = db.query(models.Staff).filter_by(staff_id=staff_id).first().restaurant
+
+        if restaurant is None:
+            return {}
+        else:
+            images_of_restaurant = []
+
+            for image_path in restaurant.images:
+                images_of_restaurant.append(load_image(image_path))
+
+            restaurant.images = images_of_restaurant
+            tables = restaurant.tables
+            avg_rating = get_restaurant_review_rate(restaurant)
+
+            for review in restaurant.reviews:
+                customer = review.customer
+            for dish in restaurant.dishes:
+                if dish.picture is not None:
+                    dish.picture = load_image(dish.picture)
+            staffs = restaurant.staffs
+            managers = restaurant.managers
+            response_dict = restaurant.__dict__
+            response_dict["avg_rating"] = avg_rating
+            return response_dict
+
+    def get_restaurant_by_manager_id(self, db: Session, manager_id: int):
+        restaurant = db.query(models.Manager).filter_by(manager_id=manager_id).first().restaurant
+
+        if restaurant is None:
+            return {}
+        else:
+            images_of_restaurant = []
+
+            for image_path in restaurant.images:
+                images_of_restaurant.append(load_image(image_path))
+
+            restaurant.images = images_of_restaurant
+            tables = restaurant.tables
+            avg_rating = get_restaurant_review_rate(restaurant)
+
+            for review in restaurant.reviews:
+                customer = review.customer
+            for dish in restaurant.dishes:
+                if dish.picture is not None:
+                    dish.picture = load_image(dish.picture)
+            staffs = restaurant.staffs
+            managers = restaurant.managers
+            response_dict = restaurant.__dict__
+            response_dict["avg_rating"] = avg_rating
+            return response_dict

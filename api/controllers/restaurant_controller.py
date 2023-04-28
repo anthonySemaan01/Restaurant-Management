@@ -96,7 +96,25 @@ async def get_reviews(restaurant_id: int,
 @router.get("/get_by_name")
 @inject
 async def get_restaurant_by_substring_of_name(restaurant_name: str,
-                      db: Session = Depends(get_db),
-                      restaurant_management: AbstractRestaurantManagement = Depends(
-                          Provide[Services.restaurant_management])):
+                                              db: Session = Depends(get_db),
+                                              restaurant_management: AbstractRestaurantManagement = Depends(
+                                                  Provide[Services.restaurant_management])):
     return restaurant_management.get_restaurant_by_name(db=db, restaurant_name=restaurant_name)
+
+
+@router.get("/get_restaurant_by_staff_id")
+@inject
+async def get_restaurant_by_staff_id(staff_id: int,
+                                     db: Session = Depends(get_db),
+                                     restaurant_management: AbstractRestaurantManagement = Depends(
+                                         Provide[Services.restaurant_management])):
+    return restaurant_management.get_restaurant_by_staff_id(db=db, staff_id=staff_id)
+
+
+@router.get("/get_restaurant_by_manager_id")
+@inject
+async def get_restaurant_by_manager_id(manager_id: int,
+                                       db: Session = Depends(get_db),
+                                       restaurant_management: AbstractRestaurantManagement = Depends(
+                                           Provide[Services.restaurant_management])):
+    return restaurant_management.get_restaurant_by_manager_id(db=db, manager_id=manager_id)
