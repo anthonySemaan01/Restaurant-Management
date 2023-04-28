@@ -49,6 +49,9 @@ class RestaurantManagement(AbstractRestaurantManagement):
         restaurant.images = images_of_restaurant
         tables = restaurant.tables
         avg_rating = get_restaurant_review_rate(restaurant)
+
+        for review in restaurant.reviews:
+            customer = review.customer
         for dish in restaurant.dishes:
             if dish.picture is not None:
                 dish.picture = load_image(dish.picture)
