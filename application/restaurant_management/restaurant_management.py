@@ -233,7 +233,7 @@ class RestaurantManagement(AbstractRestaurantManagement):
         avg_rating_list = []
         matches = []
         for restaurant in restaurants:
-            if restaurant_name in restaurant.name:
+            if restaurant_name.lower() in restaurant.name.lower():
                 images_of_restaurant = []
                 reviews = restaurant.reviews
                 avg_rating_list.append(get_restaurant_review_rate(restaurant))

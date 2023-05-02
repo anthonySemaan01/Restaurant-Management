@@ -8,6 +8,7 @@ import persistence.sql_app.models as models
 from domain.contracts.repositories.abstract_path_service import AbstractPathService
 from domain.contracts.services.abstract_staff_management import AbstractStaffManagement
 from domain.exceptions.staff_exception import StaffSignUpException
+from domain.models.send_order_request import SendOrderRequest
 from domain.models.staff_sign_in_request import StaffSignInRequest
 from domain.models.staff_sign_up_request import StaffSignUpRequest
 from shared.helpers.image_handler import load_image, save_image
@@ -90,3 +91,18 @@ class StaffManagement(AbstractStaffManagement):
                 to_return["upcoming_bookings"].append(booking_to_append)
 
         return to_return
+
+    def send_order(self, db: Session, send_order_request: SendOrderRequest):
+        dishes_ordered: list = list(send_order_request.dishes)
+        to_store = []
+        for dish in dishes_ordered:
+            to_store.append({
+                "dish_id": dish.dish_id,
+                "num": dish.num
+            })
+        order = models.Order(table_id=send_order_request.table_id, dishes_ordered=to_store)
+        db.add(order)
+        db.commit()
+
+        print(order.order_id)
+        return order

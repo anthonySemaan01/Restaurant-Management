@@ -85,6 +85,7 @@ class Order(Base):
 
     order_id = Column(Integer, primary_key=True, autoincrement=True)
     table_id = Column(Integer, ForeignKey('Table.table_id'), nullable=False)
+    dishes_ordered = Column(JSON)
 
     table = relationship('Table', back_populates='orders')
     staffs = relationship("Staff", secondary="staff_order", back_populates="orders")

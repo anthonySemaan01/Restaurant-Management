@@ -36,15 +36,18 @@ class UserManagement(AbstractUserManagement):
 
         if customer is not None:
             if user_sign_in_request.password == customer.password:
-                return True, "customer", customer.customer_id
+                return True, "customer", customer.customer_id, -1
 
         elif staff is not None:
             if user_sign_in_request.password == staff.password:
-                return True, "staff", staff.staff_id
+                restaurant = staff.restaurant_id
+                if restaurant is None:
+                    restaurant = -1
+                return True, "staff", staff.staff_id, restaurant
 
         elif manager is not None:
             if user_sign_in_request.password == manager.password:
-                return True, "manager", manager.manager_id
+                return True, "manager", manager.manager_id, manager.restaurant_id
 
         else:
             return False, "", -1

@@ -47,11 +47,12 @@ async def user_sign_in(user_sign_in_request: UserSignInRequest, db: Session = De
                        user_management: AbstractUserManagement = Depends(
                            Provide[Services.user_management])):
     try:
-        success, category, found_id = user_management.user_sign_in(db, user_sign_in_request)
+        success, category, found_id, restaurant_id = user_management.user_sign_in(db, user_sign_in_request)
         if success:
             return ApiResponse(success=True, data={
                 "category": category,
-                "id": found_id
+                "id": found_id,
+                "restaurant_id": restaurant_id
             })
         else:
             return ApiResponse(success=False, error="Incorrect Username or Password")

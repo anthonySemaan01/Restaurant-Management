@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from containers import Services
 from domain.contracts.services.abstract_staff_management import AbstractStaffManagement
-from domain.models.staff_sign_in_request import StaffSignInRequest
+from domain.models.send_order_request import SendOrderRequest
 from domain.models.staff_sign_up_request import StaffSignUpRequest, StaffUploadImage
 from persistence.repositories.api_response import ApiResponse
 from persistence.sql_app.db_dependency import get_db
@@ -39,19 +39,19 @@ async def staff_sign_up(staff_sign_up_request: StaffSignUpRequest, db: Session =
         return ApiResponse(success=False, error=e.__str__())
 
 
-@router.post("/sign_in")
-@inject
-async def user_sign_in(staff_sign_in_request: StaffSignInRequest, db: Session = Depends(get_db),
-                       staff_management: AbstractStaffManagement = Depends(
-                           Provide[Services.staff_management])):
-    try:
-        success, staff_id = staff_management.staff_sign_in(db, staff_sign_in_request)
-        if success:
-            return ApiResponse(success=True, data=staff_id)
-        else:
-            return ApiResponse(success=False, error="Incorrect Username or Password")
-    except Exception as e:
-        return ApiResponse(success=False, error=e.__str__())
+# @router.post("/sign_in")
+# @inject
+# async def user_sign_in(staff_sign_in_request: StaffSignInRequest, db: Session = Depends(get_db),
+#                        staff_management: AbstractStaffManagement = Depends(
+#                            Provide[Services.staff_management])):
+#     try:
+#         success, staff_id = staff_management.staff_sign_in(db, staff_sign_in_request)
+#         if success:
+#             return ApiResponse(success=True, data=staff_id)
+#         else:
+#             return ApiResponse(success=False, error="Incorrect Username or Password")
+#     except Exception as e:
+#         return ApiResponse(success=False, error=e.__str__())
 
 
 @router.post("/upload_profile_picture")
@@ -73,3 +73,15 @@ async def get_all_bookings(restaurant_id: int, db: Session = Depends(get_db),
                            staff_management: AbstractStaffManagement = Depends(
                                Provide[Services.staff_management])):
     return staff_management.get_bookings(restaurant_id=restaurant_id, db=db)
+
+
+@router.post("/send_order")
+@inject
+async def send_order(send_order_request: SendOrderRequest, db: Session = Depends(get_db),
+                     staff_management: AbstractStaffManagement = Depends(
+                         Provide[Services.staff_management])):
+    try:
+        status = staff_management.send_order(db=db, send_order_request=send_order_request)
+        return ApiResponse(success=True, data=status)
+    except Exception as e:
+        return ApiResponse(success=False, error=e.__str__())

@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
+from domain.models.send_order_request import SendOrderRequest
 from domain.models.staff_sign_in_request import StaffSignInRequest
 from domain.models.staff_sign_up_request import StaffSignUpRequest
 
@@ -32,3 +33,5 @@ class AbstractStaffManagement(ABC):
     def get_bookings(self, db: Session, restaurant_id: int):
         pass
 
+    def send_order(self, db: Session, send_order_request: SendOrderRequest):
+        pass
