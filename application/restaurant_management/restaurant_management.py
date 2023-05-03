@@ -144,6 +144,7 @@ class RestaurantManagement(AbstractRestaurantManagement):
         print(table_ids_in_restaurant)
         # Get the current date
         today = datetime.date.today()
+
         # Calculate the date of Monday in the current week
         monday = today - datetime.timedelta(days=today.weekday())
 
@@ -187,7 +188,7 @@ class RestaurantManagement(AbstractRestaurantManagement):
             for time_availability in times:
                 time = time_availability["time"]
                 for table, reservations_on_table in reservations_on_tables.items():
-                    if time not in reservations_on_table:
+                    if time not in reservations_on_table and time > datetime.datetime.now():
                         time_availability["available"] = 1
 
         for key, value in datetime_dict.items():

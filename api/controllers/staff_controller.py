@@ -81,7 +81,7 @@ async def send_order(send_order_request: SendOrderRequest, db: Session = Depends
                      staff_management: AbstractStaffManagement = Depends(
                          Provide[Services.staff_management])):
     try:
-        status = staff_management.send_order(db=db, send_order_request=send_order_request)
-        return ApiResponse(success=True, data=status)
+        order, status = staff_management.send_order(db=db, send_order_request=send_order_request)
+        return ApiResponse(success=status, data=order)
     except Exception as e:
         return ApiResponse(success=False, error=e.__str__())

@@ -3,6 +3,7 @@ import os
 
 from fastapi import UploadFile
 from sqlalchemy import Integer
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 import persistence.sql_app.models as models
@@ -30,9 +31,13 @@ class UserManagement(AbstractUserManagement):
         return customer
 
     def user_sign_in(self, db: Session, user_sign_in_request: UserSignInRequest):
-        customer = db.query(models.Customer).filter_by(email=user_sign_in_request.email).first()
-        staff = db.query(models.Staff).filter_by(email=user_sign_in_request.email).first()
-        manager = db.query(models.Manager).filter_by(email=user_sign_in_request.email).first()
+
+        customer = db.query(models.Customer).filter(
+            func.lower(models.Customer.email) == user_sign_in_request.email.lower()).first()
+        staff = db.query(models.Staff).filter(
+            func.lower(models.Staff.email) == user_sign_in_request.email.lower()).first()
+        manager = db.query(models.Manager).filter(
+            func.lower(models.Manager.email) == user_sign_in_request.email.lower()).first()
 
         if customer is not None:
             if user_sign_in_request.password == customer.password:
@@ -53,9 +58,13 @@ class UserManagement(AbstractUserManagement):
             return False, "", -1
 
     def user_sign_up(self, db: Session, user_sign_up_request: UserSignUpRequest):
-        email_already_used_in_customer = db.query(models.Customer).filter_by(email=user_sign_up_request.email).first()
-        email_already_used_in_staff = db.query(models.Staff).filter_by(email=user_sign_up_request.email).first()
-        email_already_used_in_manager = db.query(models.Manager).filter_by(email=user_sign_up_request.email).first()
+        email_already_used_in_customer = db.query(models.Customer).filter(
+            func.lower(models.Customer.email) == user_sign_up_request.email.lower()).first()
+        email_already_used_in_staff = db.query(models.Staff).filter(
+            func.lower(models.Staff.email) == user_sign_up_request.email.lower()).first()
+        email_already_used_in_manager = db.query(models.Manager).filter(
+            func.lower(models.Manager.email) == user_sign_up_request.email.lower()).first()
+        print(email_already_used_in_manager)
         if email_already_used_in_customer is not None or email_already_used_in_staff is not None or email_already_used_in_manager is not None:
             return "Email already exists!", False
         try:

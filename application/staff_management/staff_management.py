@@ -98,16 +98,20 @@ class StaffManagement(AbstractStaffManagement):
         return to_return
 
     def send_order(self, db: Session, send_order_request: SendOrderRequest):
+        tables = db.query(models.Table).filter_by(restaurant_id=send_order_request.restaurant_id).all()
+        tables_id = [table.table_id for table in tables]
+        if send_order_request.table_id not in tables_id:
+            return "Incorrect table ID", False
         dishes_ordered: list = list(send_order_request.dishes)
         to_store = []
         for dish in dishes_ordered:
             to_store.append({
                 "dish_id": dish.dish_id,
-                "num": dish.num
+                "count": dish.count
             })
         order = models.Order(table_id=send_order_request.table_id, dishes_ordered=to_store)
         db.add(order)
         db.commit()
 
         print(order.order_id)
-        return order
+        return order, True

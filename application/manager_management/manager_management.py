@@ -4,7 +4,7 @@ import persistence.sql_app.models as models
 from domain.contracts.services.abstract_manager_management import AbstractManagerManagement
 from domain.models.manager_requests import AssignManagerRequest, AssignStaffRequest
 from persistence.services.path_service import AbstractPathService
-
+from shared.helpers.image_handler import load_image, save_image
 
 class ManagerManagement(AbstractManagerManagement):
     def __init__(self, path_service: AbstractPathService):
@@ -12,6 +12,8 @@ class ManagerManagement(AbstractManagerManagement):
 
     def get_manager_by_id(self, manager_id: int, db: Session):
         manager = db.query(models.Manager).filter_by(manager_id=manager_id).first()
+        if manager.picture:
+            manager.picture = load_image(manager.picture)
         return manager
 
     def get_all_managers(self, db: Session):
