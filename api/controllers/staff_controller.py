@@ -33,8 +33,8 @@ async def staff_sign_up(staff_sign_up_request: StaffSignUpRequest, db: Session =
                         staff_management: AbstractStaffManagement = Depends(
                             Provide[Services.staff_management])):
     try:
-        id_of_new_staff = staff_management.staff_sign_up(db, staff_sign_up_request)
-        return ApiResponse(success=True, data=id_of_new_staff)
+        data, status = staff_management.staff_sign_up(db, staff_sign_up_request)
+        return ApiResponse(success=status, data=data)
     except Exception as e:
         return ApiResponse(success=False, error=e.__str__())
 

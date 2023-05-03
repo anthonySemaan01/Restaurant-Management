@@ -35,8 +35,8 @@ async def user_sign_up(user_sign_up_request: UserSignUpRequest, db: Session = De
                        user_management: AbstractUserManagement = Depends(
                            Provide[Services.user_management])):
     try:
-        id_of_new_user = user_management.user_sign_up(db, user_sign_up_request)
-        return ApiResponse(success=True, data=id_of_new_user)
+        data, status = user_management.user_sign_up(db, user_sign_up_request)
+        return ApiResponse(success=status, data=data)
     except Exception as e:
         return ApiResponse(success=False, error=e.__str__())
 

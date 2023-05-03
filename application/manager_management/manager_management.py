@@ -33,7 +33,9 @@ class ManagerManagement(AbstractManagerManagement):
         return manager
 
     def assign_staff_to_restaurant(self, assign_staff_request: AssignStaffRequest, db: Session):
-        staff = db.query(models.Staff).filter_by(staff_id=assign_staff_request.staff_id).first()
+        staff = db.query(models.Staff).filter_by(email=assign_staff_request.staff_email).first()
+        if staff is None:
+            return "No such staff account found!"
         staff.restaurant_id = assign_staff_request.restaurant_id
         staff.manager_id = assign_staff_request.manager_id
         db.commit()

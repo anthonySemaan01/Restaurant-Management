@@ -38,6 +38,11 @@ class StaffManagement(AbstractStaffManagement):
         return False, -1
 
     def staff_sign_up(self, db: Session, staff_sign_up_request: StaffSignUpRequest):
+        email_already_used_in_customer = db.query(models.Customer).filter_by(email=staff_sign_up_request.email).first()
+        email_already_used_in_staff = db.query(models.Staff).filter_by(email=staff_sign_up_request.email).first()
+        email_already_used_in_manager = db.query(models.Manager).filter_by(email=staff_sign_up_request.email)
+        if email_already_used_in_customer is not None or email_already_used_in_staff is not None or email_already_used_in_manager is not None:
+            return "Email already exists!", False
         try:
             new_staff = models.Staff(email=staff_sign_up_request.email, password=staff_sign_up_request.password,
                                      phone_nb=staff_sign_up_request.phone_nb,
@@ -49,7 +54,7 @@ class StaffManagement(AbstractStaffManagement):
             db.commit()
         except Exception as e:
             raise StaffSignUpException(additional_message=e.__str__())
-        return new_staff.staff_id
+        return new_staff.staff_id, True
 
     def upload_profile_image(self, db: Session, staff_id: int, image: UploadFile):
         image_destination = os.path.join(os.getcwd(), self.path_service.paths.staffs_images_path, f"img{staff_id}.png")

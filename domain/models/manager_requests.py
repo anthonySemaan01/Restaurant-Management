@@ -7,6 +7,6 @@ class AssignManagerRequest(BaseModel):
 
 
 class AssignStaffRequest(BaseModel):
-    staff_id: int
+    staff_email: str
     manager_id: int
     restaurant_id: int

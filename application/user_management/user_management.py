@@ -53,6 +53,11 @@ class UserManagement(AbstractUserManagement):
             return False, "", -1
 
     def user_sign_up(self, db: Session, user_sign_up_request: UserSignUpRequest):
+        email_already_used_in_customer = db.query(models.Customer).filter_by(email=user_sign_up_request.email).first()
+        email_already_used_in_staff = db.query(models.Staff).filter_by(email=user_sign_up_request.email).first()
+        email_already_used_in_manager = db.query(models.Manager).filter_by(email=user_sign_up_request.email).first()
+        if email_already_used_in_customer is not None or email_already_used_in_staff is not None or email_already_used_in_manager is not None:
+            return "Email already exists!", False
         try:
             new_customer = models.Customer(email=user_sign_up_request.email, password=user_sign_up_request.password,
                                            phone_nb=user_sign_up_request.phone_nb,
@@ -64,7 +69,7 @@ class UserManagement(AbstractUserManagement):
             db.commit()
         except Exception as e:
             raise UserSignUpException(additional_message=e.__str__())
-        return new_customer.customer_id
+        return new_customer.customer_id, True
 
     def upload_profile_image(self, db: Session, user_id: Integer, image: UploadFile):
         image_destination = os.path.join(os.getcwd(), self.path_service.paths.users_images_path, f"img{user_id}.png")
