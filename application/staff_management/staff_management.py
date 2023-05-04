@@ -40,7 +40,7 @@ class StaffManagement(AbstractStaffManagement):
     def staff_sign_up(self, db: Session, staff_sign_up_request: StaffSignUpRequest):
         email_already_used_in_customer = db.query(models.Customer).filter_by(email=staff_sign_up_request.email).first()
         email_already_used_in_staff = db.query(models.Staff).filter_by(email=staff_sign_up_request.email).first()
-        email_already_used_in_manager = db.query(models.Manager).filter_by(email=staff_sign_up_request.email)
+        email_already_used_in_manager = db.query(models.Manager).filter_by(email=staff_sign_up_request.email).first()
         if email_already_used_in_customer is not None or email_already_used_in_staff is not None or email_already_used_in_manager is not None:
             return "Email already exists!", False
         try:

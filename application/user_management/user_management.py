@@ -100,7 +100,11 @@ class UserManagement(AbstractUserManagement):
         return data
 
     def review_restaurant(self, db: Session, review_restaurant_request: ReviewRestaurantRequest):
-        classes_inferred: dict = start_inference(review_comment=review_restaurant_request.comment)
+
+        try:
+            classes_inferred: dict = start_inference(review_comment=review_restaurant_request.comment)
+        except Exception as e:
+            classes_inferred = {"food": 0, "price": 0, "service": 0, "ambiance": 0, "location": 0}
 
         new_review = models.Review(restaurant_id=review_restaurant_request.restaurant_id,
                                    customer_id=review_restaurant_request.customer_id,

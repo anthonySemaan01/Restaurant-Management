@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from containers import Services
 from domain.contracts.services.abstract_manager_management import AbstractManagerManagement
 from domain.models.manager_requests import AssignManagerRequest, AssignStaffRequest
+from persistence.repositories.api_response import ApiResponse
 from persistence.sql_app.db_dependency import get_db
 
 router = APIRouter()
@@ -39,4 +40,5 @@ async def assign_manager_to_restaurant(assign_manager_request: AssignManagerRequ
 async def assign_staff_to_restaurant(assign_staff_request: AssignStaffRequest, db: Session = Depends(get_db),
                                      manager_management: AbstractManagerManagement = Depends(
                                          Provide[Services.manager_management])):
-    return manager_management.assign_staff_to_restaurant(assign_staff_request=assign_staff_request, db=db)
+    status, data = manager_management.assign_staff_to_restaurant(assign_staff_request=assign_staff_request, db=db)
+    return ApiResponse(data=data, success=status)

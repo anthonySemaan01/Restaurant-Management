@@ -20,11 +20,12 @@ def start_inference(review_comment: str) -> dict:
             {"role": "system",
              "content": "You must do multilabel classification in regards to whether the text talks positively (1), "
                         "negatively (-1), neutral (0) about price, food, service, ambiance, or location. "
-                        "Response should be in JSON and follows this format: {food: 1, price: -1}. Include all "
-                        "categories along with their respective value. Dont add "
-                        "text to the reply, only provide the JSON"},
+                        "Response should be in JSON and follows this format: {food: 1, price: -1, service: 0, ambiance: 1, location: 0}. Include all "
+                        "categories along with their respective value. Do not add text to the reply, only provide the JSON. If nothing is mentioned in the text, give neutral to all fields"},
             {"role": "user", "content": review_comment},
         ]
     )
+
+    print(response['choices'][0]['message']['content'])
 
     return json.loads(response['choices'][0]['message']['content'])

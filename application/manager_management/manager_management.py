@@ -1,10 +1,12 @@
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 import persistence.sql_app.models as models
 from domain.contracts.services.abstract_manager_management import AbstractManagerManagement
 from domain.models.manager_requests import AssignManagerRequest, AssignStaffRequest
 from persistence.services.path_service import AbstractPathService
-from shared.helpers.image_handler import load_image, save_image
+from shared.helpers.image_handler import load_image
+
 
 class ManagerManagement(AbstractManagerManagement):
     def __init__(self, path_service: AbstractPathService):
@@ -35,12 +37,14 @@ class ManagerManagement(AbstractManagerManagement):
         return manager
 
     def assign_staff_to_restaurant(self, assign_staff_request: AssignStaffRequest, db: Session):
-        staff = db.query(models.Staff).filter_by(email=assign_staff_request.staff_email).first()
+        staff = db.query(models.Staff).filter(
+            func.lower(models.Staff.email) == assign_staff_request.staff_email.lower()).first()
         if staff is None:
-            return "No such staff account found!"
-        staff.restaurant_id = assign_staff_request.restaurant_id
-        staff.manager_id = assign_staff_request.manager_id
-        db.commit()
-        print(staff.restaurant_id)
-        print(staff.restaurant)
-        return staff
+            return False, "No such staff account found!"
+        if staff.restaurant_id is None:
+            staff.restaurant_id = assign_staff_request.restaurant_id
+            staff.manager_id = assign_staff_request.manager_id
+            db.commit()
+            return True, f"Staff {assign_staff_request.staff_email} added"
+        else:
+            return False, "Staff already working in another restaurant"
