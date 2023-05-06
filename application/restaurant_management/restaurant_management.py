@@ -35,7 +35,10 @@ class RestaurantManagement(AbstractRestaurantManagement):
         for index, restaurant in enumerate(restaurants):
             print(type(restaurant))
             restaurant = restaurant.__dict__
-            restaurant["avg_rating"] = avg_rating_list[index]
+            if avg_rating_list[index] == 0:
+                restaurant["avg_rating"] = "-"
+            else:
+                restaurant["avg_rating"] = avg_rating_list[index]
         return restaurants
 
     def get_restaurant_by_id(self, restaurant_id: int, db: Session):
